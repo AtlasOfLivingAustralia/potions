@@ -5,9 +5,9 @@ options. Currently experimental. For more comprehensive options
 management try [`settings`](https://cran.r-project.org/package=settings).
 
 `potions` contains three functions:
-* `brew` puts lists into a slot in `options` with a user-specified name
-* `pour` retrieves a value from that list, selected via one or more slot names
-* `drain` empties the user-specified `options` slot
+* `brew()` puts a (nested) `list` into a slot in `options` with a user-specified name
+* `pour()` retrieves a value from that list, selected via one or more slot names
+* `drain()` empties the user-specified `options` slot
 
 Example:
 ```
