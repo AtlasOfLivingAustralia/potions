@@ -32,14 +32,18 @@ pour <- function(...){
 # internal, recursive function to do the searching
 search_down <- function(x, lookup_strings){
   
-  lookup <- x[names(x) == lookup_strings[1]]
-  result <- do.call(c, lookup)
-  names(result) <- unlist(lapply(lookup, names))
-  
-  if(length(lookup_strings) <= 1){
-    unlist(result)
+  if(is.null(names(x))){ # skip levels without names
+    search_down(do.call(c, x), lookup_strings)
   }else{
-    search_down(result, lookup_strings[-1])
+    lookup <- x[names(x) == lookup_strings[1]]
+    result <- do.call(c, lookup)
+    names(result) <- unlist(lapply(lookup, names))
+  
+    if(length(lookup_strings) <= 1){
+      unlist(result)
+    }else{
+      search_down(result, lookup_strings[-1])
+    }
   }
 }
 

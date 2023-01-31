@@ -40,3 +40,22 @@ test_that("pour returns null with incorrect slot names", {
   expect_null(result)
   drain()
 })
+
+test_that("pour works when some levels are unnamed", {
+  options_list <- list(
+    user = list(uuid = "owner-uuid"),
+    params = list(
+      function_name = "ensemble",
+      datasets = list(
+        list(mimetype = "image/geotiff",
+             url = "a/valid/path_1"),
+        list(mimetype = "image/geotiff",
+             url = "a/valid/path_2")
+      )
+    )
+  )
+  brew("potions_test", options_list)
+  result <- pour("params", "datasets", "url")
+  expect_equal(result, c("a/valid/path_1", "a/valid/path_2"))
+  drain()
+})
