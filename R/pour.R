@@ -3,22 +3,65 @@
 #' UI based on here; i.e. uses strings separated by commas
 #' 
 #' @param ... strings: what slots should be returned
+#' @return a vector
 #' 
 #' @export
 
 pour <- function(...){
-  # get and test inputs
+  
+  # get inputs, check they are strings
   dots <- list(...)
   dots_check <- unlist(lapply(dots, function(a){inherits(a, "character")}))
   if(any(!dots_check)){
-    stop("all arguments to `pour` must be characters")
+    stop("all arguments to `pour` must have class `character`")
   }
   
-  # use to index list
+  # get data from options
   slot_name <- getOption("potions_slot_name")
-  x <- getOption(slot_name)
-  for(i in seq_along(dots)){
-    x <- getElement(x, dots[[i]])
-  }
-  x
+  
+  # recursively search downwards
+  search_down(getOption(slot_name), unlist(dots))
 }
+
+
+# internal, recursive function to do the searching
+search_down <- function(x, lookup_strings){
+  
+  lookup <- x[names(x) == lookup_strings[1]]
+  result <- do.call(c, lookup)
+  names(result) <- unlist(lapply(lookup, names))
+  
+  if(length(lookup_strings) <= 1){
+    unlist(result)
+  }else{
+    search_down(result, lookup_strings[-1])
+  }
+}
+
+## ALTERNATIVE IMPLEMENTATIONS
+## simple option; unlist
+## note that this is probably inefficient
+# lookup <- unlist(dots) |> paste(collapse = ".")
+# y <- unlist(x)
+# result <- y[grepl(lookup, names(y))]
+# if(length(result) < 1){
+#   NULL
+# }else{
+#   names(result) <- NULL
+#   result
+# }
+
+## alternative: use parse
+# string <- paste0("x |> ",
+#   paste(
+#     paste0("getElement(dots[[", seq_along(dots), "]])"),
+#     collapse = " |> "))
+# eval(parse(text = string))
+# # only returns one element
+
+## original working example
+# for(i in seq_along(dots)){
+#   x <- getElement(x, dots[i]])
+# }
+# x
+## only returns one element

@@ -9,6 +9,9 @@ pour(...)
 \arguments{
 \item{...}{strings: what slots should be returned}
 }
+\value{
+a vector
+}
 \description{
 UI based on here; i.e. uses strings separated by commas
 }
