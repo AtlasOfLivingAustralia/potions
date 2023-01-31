@@ -9,18 +9,23 @@
 
 pour <- function(...){
   
-  # get inputs, check they are strings
   dots <- list(...)
-  dots_check <- unlist(lapply(dots, function(a){inherits(a, "character")}))
-  if(any(!dots_check)){
-    stop("all arguments to `pour` must have class `character`")
-  }
-  
-  # get data from options
   slot_name <- getOption("potions_slot_name")
   
-  # recursively search downwards
-  search_down(getOption(slot_name), unlist(dots))
+  if(length(dots) > 0){
+    # check dots are strings
+    dots_check <- unlist(lapply(dots, function(a){inherits(a, "character")}))
+    if(any(!dots_check)){
+      stop("all arguments to `pour` must have class `character`")
+    }
+    
+    # recursively search downwards
+    search_down(getOption(slot_name), unlist(dots))
+  
+  # if no args given, return whole object 
+  }else{
+    getOption(slot_name)
+  }
 }
 
 
