@@ -32,8 +32,15 @@ pour <- function(...){
 # internal, recursive function to do the searching
 search_down <- function(x, lookup_strings){
   
+  ## print output: for testing purposes only
+  # cat(paste0("strings: ", paste(unlist(lookup_strings), collapse = " | "), "\n"))
+  
   if(is.null(names(x))){ # skip levels without names
-    search_down(do.call(c, x), lookup_strings)
+    if(length(x) < 1){ # if nothing below that level, return empty vector (NULL)
+      c()
+    }else{
+      search_down(do.call(c, x), lookup_strings)
+    }
   }else{
     lookup <- x[names(x) == lookup_strings[1]]
     result <- do.call(c, lookup)
