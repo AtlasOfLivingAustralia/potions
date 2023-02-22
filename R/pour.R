@@ -3,14 +3,18 @@
 #' UI based on here; i.e. uses strings separated by commas
 #' 
 #' @param ... strings: what slots should be returned
+#' @param slot_name Optional manual override to default slot. Useful for
+#' ensuring no clashes when used within a package
 #' @return a vector
 #' 
 #' @export
 
-pour <- function(...){
+pour <- function(..., slot_name){
   
   dots <- list(...)
-  slot_name <- getOption("potions_slot_name")
+  if(missing(slot_name)){
+    slot_name <- getOption("potions_slot_name")
+  }
   
   if(length(dots) > 0){
     # check dots are strings

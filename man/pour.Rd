@@ -4,10 +4,13 @@
 \alias{pour}
 \title{Retrieve a specified slot from options}
 \usage{
-pour(...)
+pour(..., slot_name)
 }
 \arguments{
 \item{...}{strings: what slots should be returned}
+
+\item{slot_name}{Optional manual override to default slot. Useful for
+ensuring no clashes when used within a package}
 }
 \value{
 a vector

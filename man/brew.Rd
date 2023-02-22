@@ -15,3 +15,7 @@ brew(slot_name, x)
 Start-up function to place a list into `options` with a specified 
 slot name.
 }
+\details{
+If used successively, later list entries overwrite early entries. The whole
+list is not overwritten.
+}

@@ -24,6 +24,8 @@ pour("data", "x")
 [1] 1
 pour("data", "y")
 [1] 2
+pour("data", "x", slot_name = "something_else")
+NULL
 
 # clean up
 drain()

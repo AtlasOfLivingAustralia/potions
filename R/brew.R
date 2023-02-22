@@ -5,6 +5,9 @@
 #' 
 #' @param slot_name string: where should data be stored?
 #' @param x a list containing data required at later stages
+#' @details 
+#' If used successively, later list entries overwrite early entries. The whole
+#' list is not overwritten.
 #' 
 #' @export
 
@@ -21,6 +24,12 @@ brew <- function(slot_name, x){
   }
   if(!inherits(x, "list")){
     stop("argument `x` must be a list")
+  }
+  
+  # if `slot_name` is already occupied, retain all values not overwritten by `x`
+  current_list <- pour(slot_name = slot_name)
+  if(!is.null(current_list)){
+    x <- c(current_list[!(names(current_list) %in% names(x))], x)
   }
   
   # set options
