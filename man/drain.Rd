@@ -4,8 +4,11 @@
 \alias{drain}
 \title{Clear package options}
 \usage{
-drain()
+drain(slot_name)
+}
+\arguments{
+\item{slot_name}{(optional) slot to clear from options()}
 }
 \description{
-No arguments required
+Clear options of previously specified content
 }
