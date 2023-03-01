@@ -1,4 +1,7 @@
-# potions
+
+<img src="man/figures/potions-logo.png" align="left" style="margin: 0px 10px 0px 0px;" alt="" width="120"/>
+<h2>potions</h2>
+
 lightweight options management in R, designed to act like pkg 
 [`here`](https://cran.r-project.org/package=here), but for nested lists in 
 options. Currently experimental. For more comprehensive options
