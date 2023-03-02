@@ -2,20 +2,34 @@
 % Please edit documentation in R/brew.R
 \name{brew}
 \alias{brew}
+\alias{brew_package}
+\alias{brew_interactive}
 \title{Set up potions for easy data retrieval}
 \usage{
-brew(slot_name, x)
+brew(.data, slot, pkg)
+
+brew_package(.data, pkg)
+
+brew_interactive(.data, slot)
 }
 \arguments{
-\item{slot_name}{string: where should data be stored?}
+\item{.data}{a list containing data to be stored via `options()`.}
 
-\item{x}{a list containing data required at later stages}
+\item{slot}{string: optional name to mandate where data is stored. Defaults 
+to "default".}
+
+\item{pkg}{string: if using {potions} within a package development process,
+use this argument instead of `slot`.}
 }
 \description{
 Start-up function to place a list into `options` with a specified 
 slot name.
 }
 \details{
-If used successively, later list entries overwrite early entries. The whole
-list is not overwritten.
+The default method is to use `brew` and set either `pkg` or `slot`, but not
+both. Alternatively you can use `brew_package()` or `brew_interactive()`.
+
+If the user repeatly calls `brew()`, later list entries overwrite early 
+entries. Whole lists are not overwritten unless all top-level entry names 
+match. All data is stored in options("potions-pkg")
 }

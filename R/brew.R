@@ -2,39 +2,67 @@
 #' 
 #' Start-up function to place a list into `options` with a specified 
 #' slot name.
-#' 
-#' @param slot_name string: where should data be stored?
-#' @param x a list containing data required at later stages
+#' @param .data a list containing data to be stored via `options()`.
+#' @param slot string: optional name to mandate where data is stored. Defaults 
+#' to "default".
+#' @param pkg string: if using {potions} within a package development process,
+#' use this argument instead of `slot`.
+#' @importFrom rlang abort
+#' @importFrom rlang inform
+#' @importFrom rlang trace_back
 #' @details 
-#' If used successively, later list entries overwrite early entries. The whole
-#' list is not overwritten.
+#' The default method is to use `brew` and set either `pkg` or `slot`, but not
+#' both. Alternatively you can use `brew_package()` or `brew_interactive()`.
 #' 
+#' If the user repeatly calls `brew()`, later list entries overwrite early 
+#' entries. Whole lists are not overwritten unless all top-level entry names 
+#' match. All data is stored in options("potions-pkg")
 #' @export
+brew <- function(.data, slot, pkg){
+  has_slot <- !missing(slot)
+  has_pkg <- !missing(pkg)
+  if(has_slot){
+    if(has_pkg){
+      abort("Both `slot` and `pkg` have been set; please choose one")
+    }
+    brew_interactive(.data, slot)
+  }else{
+    if(has_pkg){
+      brew_package(.data, pkg)
+    }else{
+      brew_interactive(.data, slot = "default")
+    }
+  }
+}
 
-brew <- function(slot_name, x){
-  # check inputs
-  if(missing(slot_name)){
-    stop("argument `slot_name` is missing, with no default")
-  }
-  if(missing(x)){
-    stop("argument `x` is missing, with no default")
-  }
-  if(!inherits(slot_name, "character")){
-    stop("argument `slot_name` must be a character")
-  }
-  if(!inherits(x, "list")){
-    stop("argument `x` must be a list")
-  }
+#' @rdname brew
+#' @export
+brew_package <- function(.data, pkg){
+  # check data
+  check_potions_data(.data)
+  check_is_character("pkg", pkg)
   
-  # if `slot_name` is already occupied, retain all values not overwritten by `x`
-  current_list <- pour(slot_name = slot_name)
-  if(!is.null(current_list)){
-    x <- c(current_list[!(names(current_list) %in% names(x))], x)
-  }
+  # get potions object and update with pkg data
+  current_list <- check_potions_storage() |>
+    update_package_names(pkg) |>
+    update_package_data(provided = .data, pkg = pkg)
   
-  # set options
-  options("potions_slot_name" = slot_name)
-  x_list <- list(x)
-  names(x_list) <- slot_name
-  options(x_list)
+  # save to `options()`
+  options(list("potions-pkg" = current_list))
+}
+
+#' @rdname brew
+#' @export
+brew_interactive <- function(.data, slot){
+  # check data
+  check_potions_data(.data)
+  check_is_character("slot", slot)
+  
+  # get potions object and update with pkg data
+  current_list <- check_potions_storage() |>
+    update_default_name(slot) |>
+    update_slot_data(provided = .data, slot = slot)
+  
+  # save to `options()`
+  options(list("potions-pkg" = current_list))
 }

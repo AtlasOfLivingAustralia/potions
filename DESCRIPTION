@@ -8,10 +8,14 @@ Authors@R:
              email = "martin.westgate@csiro.au",
              role = c("aut", "cre")))
 Description: Store and retrieve data from `options` using `here()`-like syntax. 
-License: What license is it under?
+Depends:
+    R (>= 4.2.0)
+Imports:
+    rlang
+Suggests: 
+    testthat (>= 3.0.0)
+License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
-Suggests: 
-    testthat (>= 3.0.0)
 Config/testthat/edition: 3
