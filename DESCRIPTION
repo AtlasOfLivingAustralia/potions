@@ -11,7 +11,8 @@ Description: Store and retrieve data from `options` using `here()`-like syntax.
 Depends:
     R (>= 4.2.0)
 Imports:
-    rlang
+    rlang,
+    stringi
 Suggests: 
     testthat (>= 3.0.0)
 License: MIT

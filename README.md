@@ -37,3 +37,12 @@ drain()
 getOption("potions_example")
 NULL
 ```
+
+To use in a package development situation, set `onLoad.R` to
+```
+.onLoad <- function(libname, pkgname) {
+  if(pkgname == "my_package_name_here") {
+    potions::brew(.pkg = "my_package_name_here")
+  }
+}
+```
