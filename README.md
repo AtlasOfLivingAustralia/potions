@@ -20,7 +20,7 @@ options_list <- list(
   metadata = list(a = 10, b = 12))
   
 # place in options
-brew("potions_example", options_list)
+brew(options_list)
   
 # extract values using `here()`-like syntax
 pour("data", "x")

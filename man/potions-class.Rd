@@ -3,13 +3,19 @@
 \name{potions-class}
 \alias{potions-class}
 \alias{create_potions}
+\alias{explore_potions}
 \alias{print.potions}
 \title{Class for `potions` lists}
 \usage{
 create_potions()
 
+explore_potions()
+
 \method{print}{potions}(x, ...)
 }
 \description{
 Early days
+
+Similar to `pour`, but returns all data, while `pour` only ever returns
+data for a single slot or package
 }

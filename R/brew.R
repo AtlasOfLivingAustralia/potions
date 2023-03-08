@@ -36,12 +36,18 @@ brew <- function(.data, .slot, .pkg){
   }else{
     if(has_pkg){
       brew_package(.data, .pkg)
-    }else{ # if .slot and .pkg missing, choose based on previous activity
-      lookup <- check_existing_slots()
-      switch(lookup$method,
-             "all_empty" = {brew_interactive(.data)}, # no data; .slot is random
-             ".pkg" = {brew_package(.data, .pkg = lookup$value)},
-             ".slot" = {brew_interactive(.data, .slot = lookup$value)})
+    }else{ # if .slot and .pkg missing, choose based on call location
+      package_check <- trace_back()$namespace |> 
+        check_within_pkg()
+      if(package_check$within){
+        brew_package(.data, .pkg = package_check$pkg)
+      }else{
+        lookup <- check_existing_slots()
+        switch(lookup$method,
+               "all_empty" = {brew_interactive(.data)}, # no data; .slot is random
+               ".pkg" = {brew_package(.data, .pkg = lookup$value)},
+               ".slot" = {brew_interactive(.data, .slot = lookup$value)}) 
+      }
     }
   }
 }

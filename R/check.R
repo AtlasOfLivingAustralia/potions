@@ -1,5 +1,7 @@
-# check if `potions` data exists already, and if not create it
-# returns an object of class `potions`
+#' check if `potions` data exists already, and if not create it
+#' @return an object of class `potions`
+#' @keywords internal
+#' @noRd
 check_potions_storage <- function(){
   current_list <- getOption("potions-pkg")
   if(is.null(current_list)){
@@ -7,21 +9,6 @@ check_potions_storage <- function(){
   }
   return(current_list)
 }
-
-
-# # check data provided to {potions}
-# # Duplicates functionality of `check_potions_storage()`
-check_potions_data <- function(.data){
-  if(missing(.data)){
-    abort("Argument `.data` is missing, with no default")
-  }
-}
-#   # if(!inherits(.data, "list")){
-#   #  abort("Argument `.data` must be a list") # should this be enforced?
-#     # Could be useful to allow bespoke classes from different packages
-#   # }
-# }
-
 
 #' simple character check
 #' 
@@ -32,29 +19,35 @@ check_potions_data <- function(.data){
 check_is_character <- function(x, fill = FALSE){
   if(missing(x)){
     if(fill){
-      x <- stri_rand_strings(n = 1, length = 10)
-      return(x)
+      result <- stri_rand_strings(n = 1, length = 10)
     }else{
       abort("Argument `x` is missing, with no default")
     }
+  }else{
+    result <- x
   }
-  if(!inherits(x, "character")){
+  if(!inherits(result, "character")){
     abort("Non-character value supplied")
+  }else{
+    return(result)
   }
 }
 
-
-# function used in `brew` to decide whether to use .pkg or .slot
-# returns a `list` with up to two entries
+#' Function used in `brew` to decide whether to use .pkg or .slot
+#' @return a `list` with up to two entries
+#' @keywords internal
+#' @noRd
 check_existing_slots <- function(){
   lookup <- getOption("potions-pkg")
   if(is.null(lookup)){
     return(list(method = "all_empty"))
   }else{
-    if(!is.null(lookup$current_slot)){
-      return(list(method = ".slot", value = lookup$current_slot))
-    }else if(!is.null(lookup$packages)){
-      return(list(method = ".pkg", value = lookup$packages[[length(lookup$packages)]]))
+    if(!is.null(lookup$mapping$current_slot)){
+      return(list(method = ".slot", 
+                  value = lookup$mapping$current_slot))
+    }else if(!is.null(lookup$mapping$packages)){
+      return(list(method = ".pkg", 
+                  value = lookup$mapping$packages[[length(lookup$mapping$packages)]]))
     }else{
       return(list(method = "all_empty"))
     }
@@ -75,16 +68,25 @@ check_existing_slots <- function(){
 #' @noRd
 check_within_pkg <- function(trace){
   .data <- getOption("potions-pkg")
-  if(is.null(.data)){
-    return(FALSE)
-  }else{
-    pkg <- .data
-    pkg_info_stored <- any(.data$mapping$packages == pkg)
-    pkg_loaded <- isNamespaceLoaded(pkg) # possibly redundant
-    pkg_in_trace <- any(trace$namespace == pkg)
-    return(pkg_info_stored & pkg_loaded & pkg_in_trace)
+  result <- list(within = FALSE)
+  if(!is.null(.data)){
+    if(!is.null(.data$mapping$packages)){
+      next_pkg <- trace[trace != "potions"]
+      if(length(next_pkg) > 0){
+        if(any(.data$mapping$packages == rev(next_pkg)[1])){
+          result <- list(within = TRUE, pkg = next_pkg)
+        }
+      }
+    }
   }
+  return(result)
 }
+
+## alternative or additional code:    
+# pkg_info_stored <- any(.data$mapping$packages == trace[])
+# pkg_loaded <- isNamespaceLoaded(pkg) # possibly redundant
+# pkg_in_trace <- any(trace$namespace == pkg)
+# return(pkg_info_stored & pkg_loaded & pkg_in_trace)
 
 ## NOTES on above logic
 # x <- rev(trace_back()$namespace) # returns tree going upwards
@@ -96,19 +98,88 @@ check_within_pkg <- function(trace){
 ## note that in this case, pour() will default to package name, and index within it
 # you will therefore need to add attr(x, "pkg") <- slot_name for clarity and debugging reasons
 
+#' internal checks for `pour_package`
+#' @importFrom rlang abort
+#' @keywords internal
+#' @noRd
+check_pour_package <- function(.pkg){
+  # ensure a package name is given
+  if(missing(.pkg)){
+    abort("Argument `.pkg` is missing, with no default")
+  }
+  
+  # check any data has been provided
+  all_data <- getOption("potions-pkg")
+  if(is.null(all_data)){
+    bullets <- c("No data stored by `potions`",
+                 i = "try using `brew()")
+    abort(bullets)
+  }else{
+    # check package has been listed as having data
+    if(!any(all_data$mapping$packages == .pkg)){
+      abort(paste0("No data stored for package ", .pkg))
+    }else{
+      return(all_data$packages[[.pkg]])
+    }
+  }
+}
 
-# Early test fun to get environment information
-# 
-# Purpose of this function is to develop methods to determine whether 
-# potions is being called within another package
-# @importFrom rlang trace_back
-# env_check <- function(){
-# list(
-#   environment(),
-#   parent.env(environment()),
-#   parent.env(parent.env(environment())),
-#   parent.env(parent.env(parent.env(environment()))),
-#   ls.str(),
-#  trace_back() # NOTE: this is probably the only bit we'll end up using
-# )
+#' Internal checks for `pour_interactive`
+#' 
+#' Note that - unlike packages - slots can be set to run on default only. This
+#' means that .slot is not always required
+#' @importFrom rlang abort
+#' @importFrom rlang inform
+#' @keywords internal
+#' @noRd
+check_pour_interactive <- function(.slot){
+  
+  # check any data has been provided
+  all_data <- getOption("potions-pkg")
+  if(is.null(all_data)){
+    bullets <- c("No data stored by `potions`",
+                 i = "try using `brew()")
+    abort(bullets)
+  }else{
+    if(missing(.slot)){
+      if(length(all_data$slots) > 1){
+        if(any(names(all_data$slots) == all_data$mapping$current_slot)){
+          return(all_data$slots[[all_data$mapping$current_slot]])
+        }else{
+          bullets <- c("Multiple slots available, but `current_slot` is not named",
+                       i = "please specify `.slot` to continue")
+          abort(bullets)
+        }
+      }else if(length(all_data$slots) == 1L){
+        return(all_data$slots[[1]])
+      }else{
+        bullets <- c("No data stored by `potions` using interactive mode",
+                     i = "try using `brew()`")
+        inform(bullets)
+        return(NULL)
+      }
+    }else{ # i.e. `.slot` is given
+      if(any(names(all_data$slots) == .slot)){
+        return(all_data$slots[[.slot]])
+      }else{
+        bullets <- c("Named .slot is not stored by `potions`",
+                     i = "please specify a valid `.slot` to continue")
+        abort(bullets)
+      }     
+    }
+  }
+}
+
+# # check data provided to {potions}
+# # Duplicates functionality of `check_potions_storage()`
+# Q: Is this used?
+check_potions_data <- function(.data){
+  if(missing(.data)){
+    abort("Argument `.data` is missing, with no default")
+  }
+}
+#   # if(!inherits(.data, "list")){
+#   #  abort("Argument `.data` must be a list") # should this be enforced?
+#     # Could be useful to allow bespoke classes from different packages
+#   # }
 # }

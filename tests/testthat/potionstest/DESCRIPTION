@@ -1,0 +1,12 @@
+Package: potionstest
+Type: Package
+Title: Package for testing {potions}
+Version: 0.1.0
+Authors@R:
+    c(person(given = "Martin",
+             family = "Westgate",
+             email = "martin.westgate@csiro.au",
+             role = c("aut", "cre")))
+Description: Internal use only. 
+Depends:
+    R (>= 4.2.0)

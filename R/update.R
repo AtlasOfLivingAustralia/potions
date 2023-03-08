@@ -16,7 +16,7 @@ update_package_data <- function(.data, provided, pkg){
   }else{
     .data$packages[[pkg]] <- update_list(
       initial = .data$packages[[pkg]],
-      update = list(provided))
+      update = provided)
     return(.data)
   }
 }
@@ -27,7 +27,7 @@ update_slot_data <- function(.data, provided, .slot){
   }else{
     .data$slots[[.slot]] <- update_list(
       initial = .data$slots[[.slot]],
-      update = list(provided))
+      update = provided)
     return(.data)
   }
 }

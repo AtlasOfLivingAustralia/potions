@@ -1,37 +1,58 @@
 #' Retrieve a specified slot from options
 #' 
-#' UI based on here; i.e. uses strings separated by commas
+#' UI based on `{here}`; i.e. uses strings separated by commas
 #' 
 #' @param ... strings: what slots should be returned
 #' @param slot_name Optional manual override to default slot. Useful for
 #' ensuring no clashes when used within a package
+#' @importFrom rlang trace_back
 #' @return a vector
 #' 
 #' @export
 
-pour <- function(..., slot_name){
+pour <- function(..., .slot, .pkg){
+
+  if(missing(.slot) & missing(.pkg)){
+    package_check <- trace_back()$namespace |> 
+                     check_within_pkg()
   
-  dots <- list(...)
-  if(missing(slot_name)){
-    slot_name <- getOption("potions_slot_name")
-  }
-  
-  if(length(dots) > 0){
-    # check dots are strings
-    dots_check <- unlist(lapply(dots, function(a){inherits(a, "character")}))
-    if(any(!dots_check)){
-      stop("all arguments to `pour` must have class `character`")
+    if(package_check$within){
+      pour_package(..., .pkg = package_check$pkg)
+    }else{
+      pour_interactive(...)
     }
-    
-    # recursively search downwards
-    search_down(getOption(slot_name), unlist(dots))
-  
-  # if no args given, return whole object 
   }else{
-    getOption(slot_name)
+    if(missing(.slot)){ # i.e. .pkg is given, but not .slot
+      pour_package(..., .pkg = .pkg)
+    }else{ # .slot is given, but not .pkg
+      pour_interactive(..., .slot = .slot)
+    }
   }
 }
 
+# pour data for a selected package
+pour_package <- function(..., .pkg){
+  dots <- unlist(list(...))
+  .data <- check_pour_package(.pkg)
+  if(length(dots) > 0){
+    check_is_character(dots, fill = FALSE)
+    search_down(.data, dots)
+  }else{
+    return(.data)
+  }
+}
+
+# pour data for a selected slot
+pour_interactive <- function(..., .slot){
+  dots <- unlist(list(...))
+  .data <- check_pour_interactive(.slot)
+  if(length(dots) > 0){
+    check_is_character(dots, fill = FALSE)
+    search_down(.data, dots)
+  }else{
+    return(.data)
+  }
+}
 
 # internal, recursive function to do the searching
 search_down <- function(x, lookup_strings){

@@ -4,7 +4,7 @@
 \alias{pour}
 \title{Retrieve a specified slot from options}
 \usage{
-pour(..., slot_name)
+pour(..., .slot, .pkg)
 }
 \arguments{
 \item{...}{strings: what slots should be returned}
@@ -16,5 +16,5 @@ ensuring no clashes when used within a package}
 a vector
 }
 \description{
-UI based on here; i.e. uses strings separated by commas
+UI based on `{here}`; i.e. uses strings separated by commas
 }
