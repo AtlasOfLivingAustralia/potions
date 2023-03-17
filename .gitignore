@@ -1,5 +1,8 @@
 .DS_Store
 
+# pkgdown rendered content
+/docs
+
 # History files
 .Rhistory
 .Rapp.history

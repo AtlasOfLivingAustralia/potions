@@ -4,17 +4,17 @@
 \alias{potions-class}
 \alias{create_potions}
 \alias{print.potions}
-\title{Methods for `potions` data}
+\title{Methods for \code{potions} data}
 \usage{
 create_potions()
 
 \method{print}{potions}(x, ...)
 }
 \arguments{
-\item{x}{An object of class `potions`}
+\item{x}{An object of class \code{potions}}
 
-\item{...}{Any further arguments to `print()`}
+\item{...}{Any further arguments to \code{print()}}
 }
 \description{
-Data storage for information passed to `{potions}`.
+Data storage for information passed to \code{{potions}}.
 }

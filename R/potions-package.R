@@ -22,7 +22,7 @@
 #' \itemize{
 #'    \item{[brew()]: store data in `options()`}
 #'    \item{[pour()]: retrieve data from `options()`}
-#'    \item{[drain()]: remove data stored using `[brew()]`}
+#'    \item{[drain()]: remove data stored using [brew()]}
 #'  }
 #' @keywords internal
 NULL

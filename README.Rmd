@@ -1,0 +1,62 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+<img src="man/figures/potions-logo.png" align="left" style="margin: 0px 10px 0px 0px;" alt="" width="120"/><h2>potions: easy options management</h2>
+
+Often it is useful to set bespoke options for a single workflow, or within a single package, without altering global options that influence other users or packages. This is possible `base::options()` and related functions, however doing so requires some bespoke knowledge. `{potions}` makes options management as easy as possible, by decreasing programmers' cognitive burden while storing and retrieving information. It does this by following three guiding principles:
+
+- **minimalist**: `{potions}` has only three core functions: `brew()`, `pour()` and `drain()`
+- **laconic**: functions use as few characters as possible
+- **familiar**: uses a UI for data retrieval based on the `{here}` package
+
+In combination, these features should make it easy for users and developers to manage options using {potions}.
+
+## Getting started
+
+Install from GitHub:
+```{r eval=FALSE}
+install.packages("remotes")
+remotes::install_github("atlasoflivingaustralia/potions")
+```
+
+To store data in options, use `brew()`
+```{r}
+library(potions)
+brew(list(x = 1, y = list(a = 2, b = 4)))
+```
+  
+Then you can use `pour()` to get the information you need:
+```{r}
+pour() |> str() # get all data
+
+pour("x") # get a subset of data
+
+pour("y", "a") # for nested data
+```
+
+When you are done, simply use `drain()` to clean up:
+```{r}
+drain()
+
+pour() # nothing to return
+```
+
+To use in a package development situation, set `onLoad.R` to
+```{r, eval=FALSE}
+.onLoad <- function(libname, pkgname) {
+  if(pkgname == "my_package_name_here") {
+    potions::brew(.pkg = "my_package_name_here")
+  }
+}
+```
+You can then use the above functions as you would in the console.

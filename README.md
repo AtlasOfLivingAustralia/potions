@@ -1,48 +1,77 @@
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 <img src="man/figures/potions-logo.png" align="left" style="margin: 0px 10px 0px 0px;" alt="" width="120"/>
-<h2>potions</h2>
+<h2>
+potions: easy options management
+</h2>
 
-lightweight options management in R, designed to act like pkg 
-[`here`](https://cran.r-project.org/package=here), but for nested lists in 
-options. Currently experimental. For more comprehensive options
-management try [`settings`](https://cran.r-project.org/package=settings).
+Often it is useful to set bespoke options for a single workflow, or
+within a single package, without altering global options that influence
+other users or packages. This is possible `base::options()` and related
+functions, however doing so requires some bespoke knowledge. `{potions}`
+makes options management as easy as possible, by decreasing programmers’
+cognitive burden while storing and retrieving information. It does this
+by following three guiding principles:
 
-`potions` contains three functions:
-* `brew()` puts a (nested) `list` into a slot in `options` with a user-specified name
-* `pour()` retrieves a value from that list, selected via one or more slot names
-* `drain()` empties the user-specified `options` slot
+- **minimalist**: `{potions}` has only three core functions: `brew()`,
+  `pour()` and `drain()`
+- **laconic**: functions use as few characters as possible
+- **familiar**: uses a UI for data retrieval based on the `{here}`
+  package
 
-Example:
+In combination, these features should make it easy for users and
+developers to manage options using {potions}.
+
+## Getting started
+
+Install from GitHub:
+
+``` r
+install.packages("remotes")
+remotes::install_github("atlasoflivingaustralia/potions")
 ```
-# set some example data
-options_list <- list(
-  data = list(x = 1, y = 2),
-  metadata = list(a = 10, b = 12))
-  
-# place in options
-brew(options_list)
-  
-# extract values using `here()`-like syntax
-pour("data", "x")
-[1] 1
-pour("data", "y")
-[1] 2
-pour("data", "x", slot_name = "something_else")
-NULL
 
-# clean up
+To store data in options, use `brew()`
+
+``` r
+library(potions)
+brew(list(x = 1, y = list(a = 2, b = 4)))
+```
+
+Then you can use `pour()` to get the information you need:
+
+``` r
+pour() |> str() # get all data
+#> List of 2
+#>  $ x: num 1
+#>  $ y:List of 2
+#>   ..$ a: num 2
+#>   ..$ b: num 4
+
+pour("x") # get a subset of data
+#> [1] 1
+
+pour("y", "a") # for nested data
+#> [1] 2
+```
+
+When you are done, simply use `drain()` to clean up:
+
+``` r
 drain()
 
-# prove cleanup worked:
-getOption("potions_example")
-NULL
+pour() # nothing to return
+#> list()
 ```
 
 To use in a package development situation, set `onLoad.R` to
-```
+
+``` r
 .onLoad <- function(libname, pkgname) {
   if(pkgname == "my_package_name_here") {
     potions::brew(.pkg = "my_package_name_here")
   }
 }
 ```
+
+You can then use the above functions as you would in the console.
