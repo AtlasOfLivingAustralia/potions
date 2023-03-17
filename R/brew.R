@@ -10,7 +10,7 @@
 #' instead of `slot`.
 #' @importFrom rlang abort
 #' @details 
-#' The default method is to use `brew` and set either `pkg` or `slot`, but not
+#' The default method is to use `brew` and set either `.pkg` or `.slot`, but not
 #' both. Alternatively you can use `brew_package()` or `brew_interactive()`. 
 #' Note that if neither `.slot` or `.pkg` are set, `potions` defaults to `.slot`
 #' , unless `.pkg` information has previously been supplied (and `.slot` 
@@ -20,12 +20,13 @@
 #' If no `.data` argument is given, this function sets up an empty `potions` 
 #' object in `options("potions-pkg")`. See `potions-class` for more information.
 #' 
-#' If the user repeatly calls `brew()`, later list entries overwrite early 
+#' If the user repeatedly calls `brew()`, later list entries overwrite early 
 #' entries. Whole lists are not overwritten unless all top-level entry names 
 #' match.
 #' @export
 brew <- function(.data, .slot, .pkg){
-  # determine behaviour based on supplied arguments
+  
+  # determine behavior based on supplied arguments
   has_slot <- !missing(.slot)
   has_pkg <- !missing(.pkg)
   if(has_slot){
@@ -45,7 +46,7 @@ brew <- function(.data, .slot, .pkg){
         lookup <- check_existing_slots()
         switch(lookup$method,
                "all_empty" = {brew_interactive(.data)}, # no data; .slot is random
-               ".pkg" = {brew_package(.data, .pkg = lookup$value)},
+               # ".pkg" = {brew_package(.data, .pkg = lookup$value)}, # impossible
                ".slot" = {brew_interactive(.data, .slot = lookup$value)}) 
       }
     }
@@ -55,7 +56,8 @@ brew <- function(.data, .slot, .pkg){
 #' @rdname brew
 #' @export
 brew_package <- function(.data, .pkg){
-  check_is_character(.pkg, fill = FALSE) # errors if .pkg is missing
+  check_is_character(.pkg)
+  check_length_one(.pkg)
   current_list <- check_potions_storage() |>
     update_package_names(.pkg) |>
     update_package_data(provided = .data, pkg = .pkg)
@@ -65,7 +67,9 @@ brew_package <- function(.data, .pkg){
 #' @rdname brew
 #' @export
 brew_interactive <- function(.data, .slot){
-  .slot <- check_is_character(.slot, fill = TRUE) # generates a random slot if not given
+  .slot <- enforce_slot_name(.slot) # generates a random slot if not given
+  check_is_character(.slot) # for case where .slot is given, but is not a character
+  check_length_one(.slot)
   current_list <- check_potions_storage() |> 
                   update_default_name(.slot = .slot) |>
                   update_slot_data(.data, .slot)

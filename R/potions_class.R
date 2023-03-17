@@ -16,13 +16,3 @@ create_potions <- function(){
 
 # NOTE: the object that stores user information has class `potions`
 # it stores objects of class `list`
-
-#' view all data stored by potions
-#' 
-#' `explore_potions` is similar to `pour`, but returns all data, while `pour` 
-#' only ever returns data for a single slot or package
-#' @rdname potions-class
-#' @export
-explore_potions <- function(){
-  getOption("potions-pkg")
-}

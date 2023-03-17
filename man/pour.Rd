@@ -2,19 +2,49 @@
 % Please edit documentation in R/pour.R
 \name{pour}
 \alias{pour}
-\title{Retrieve a specified slot from options}
+\alias{pour_package}
+\alias{pour_interactive}
+\alias{pour_all}
+\title{Retrieve information stored using `potions::brew()`}
 \usage{
 pour(..., .slot, .pkg)
+
+pour_package(..., .pkg)
+
+pour_interactive(..., .slot)
+
+pour_all()
 }
 \arguments{
-\item{...}{strings: what slots should be returned}
+\item{...}{string: what slots should be returned}
 
-\item{slot_name}{Optional manual override to default slot. Useful for
-ensuring no clashes when used within a package}
+\item{.slot}{string: Optional manual override to default slot}
+
+\item{.pkg}{string: Optional manual override to default package}
 }
 \value{
-a vector
+If no arguments are passed to `...`, returns a `list` from the 
+default slot. If `...` is supplied (correctly), then returns a `vector` of 
+values matching those names.
 }
 \description{
-UI based on `{here}`; i.e. uses strings separated by commas
+This is the main function that most users will call on. It retrieves data 
+from a `potions` object stored using `brew()`. The UI for this function is 
+based on `{here}`; i.e. uses strings separated by commas to navigate through
+nested content.
+}
+\details{
+Providing multiple arguments to `...` brings back nested values, 
+i.e. `pour("x", "y")` is for the case of an object structured as 
+`list(x = list(y = 1))`, rather than `list(x = 1, y = 2)`. For the latter 
+case it would be necessary to call with either no arguments 
+(`unlist(pour())`), or for greater control, call pour multiple times 
+specifying different entries each time (e.g. `z <- c(pour("x"), pour("y"))`).
+
+Additional functions are provided in case greater specificity is required. 
+`pour_interactive(.slot = ...)` is synonymous with `pour(.slot = ...)`, while 
+`pour_package(.pkg = ...)` is synonymous with `pour(.pkg = ...)`. 
+`pour_all()` is a shortcut for `getOption("potions-pkg")`; i.e. to show all
+data stored using `potions` by any package or slot, and does not accept any
+arguments.
 }

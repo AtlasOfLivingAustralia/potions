@@ -16,41 +16,42 @@ check_potions_storage <- function(){
 #' @importFrom stringi stri_rand_strings
 #' @keywords internal
 #' @noRd
-check_is_character <- function(x, fill = FALSE){
-  if(missing(x)){
-    if(fill){
-      result <- stri_rand_strings(n = 1, length = 10)
-    }else{
-      abort("Argument `x` is missing, with no default")
-    }
-  }else{
-    result <- x
-  }
-  if(!inherits(result, "character")){
+check_is_character <- function(x){
+  if(!inherits(x, "character")){
     abort("Non-character value supplied")
-  }else{
-    return(result)
   }
 }
 
-#' Function used in `brew` to decide whether to use .pkg or .slot
-#' @return a `list` with up to two entries
-#' @keywords internal
-#' @noRd
-check_existing_slots <- function(){
-  lookup <- getOption("potions-pkg")
-  if(is.null(lookup)){
-    return(list(method = "all_empty"))
+# check_is_character <- function(x, fill = FALSE){
+#   if(missing(x)){
+#     if(fill){
+#       result <- stri_rand_strings(n = 1, length = 10)
+#     }else{
+#       abort("Argument `x` is missing, with no default")
+#     }
+#   }else{
+#     result <- x
+#   }
+#   if(!inherits(result, "character")){
+#     abort("Non-character value supplied")
+#   }else{
+#     if(length(result) > 1){
+#       abort("Argument of length-1 expected") # causes problem when applied to pour(...)
+#     }else{
+#       return(result) 
+#     }
+#   }
+# }
+
+check_length_one <- function(x){
+  if(length(x) > 1){abort("Argument of length-1 expected")}
+}
+
+enforce_slot_name <- function(x){
+  if(missing(x)){
+    stri_rand_strings(n = 1, length = 10)
   }else{
-    if(!is.null(lookup$mapping$current_slot)){
-      return(list(method = ".slot", 
-                  value = lookup$mapping$current_slot))
-    }else if(!is.null(lookup$mapping$packages)){
-      return(list(method = ".pkg", 
-                  value = lookup$mapping$packages[[length(lookup$mapping$packages)]]))
-    }else{
-      return(list(method = "all_empty"))
-    }
+    x
   }
 }
 
@@ -69,17 +70,42 @@ check_existing_slots <- function(){
 check_within_pkg <- function(trace){
   .data <- getOption("potions-pkg")
   result <- list(within = FALSE)
-  if(!is.null(.data)){
-    if(!is.null(.data$mapping$packages)){
-      next_pkg <- trace[trace != "potions"]
-      if(length(next_pkg) > 0){
-        if(any(.data$mapping$packages == rev(next_pkg)[1])){
+  if(!is.null(.data)){ # data have been added
+    if(!is.null(.data$mapping$packages)){ # names have been added to .data$mapping$packages (usually by onLoad) 
+      next_pkg <- rev(trace[trace != "potions"])[1] # get package above `potions` in `trace_back()`
+      # browser()
+      if(
+        length(next_pkg) > 0 && !is.na(next_pkg) # some package name exists that isn't NA
+        # i.e. you ARE within another package
+      ){
+        if(any(.data$mapping$packages == next_pkg)){ # i.e. the package you believe you are in has been registered with `potions`
           result <- list(within = TRUE, pkg = next_pkg)
         }
       }
     }
   }
   return(result)
+}
+
+#' Function used in `brew` to decide which .slot to use
+#' Note that by the point this function has been called, `check_within_pkg()`
+#' has already returned `FALSE`. Ergo this should never return `.pkg` as an 
+#' option
+#' @return a `list` with up to two entries
+#' @keywords internal
+#' @noRd
+check_existing_slots <- function(){
+  lookup <- getOption("potions-pkg")
+  if(is.null(lookup)){
+    return(list(method = "all_empty"))
+  }else{
+    if(!is.null(lookup$mapping$current_slot)){
+      return(list(method = ".slot", 
+                  value = lookup$mapping$current_slot))
+    }else{
+      return(list(method = "all_empty")) # passes to .slot with random name
+    }
+  }
 }
 
 ## alternative or additional code:    

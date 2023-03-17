@@ -2,13 +2,31 @@
 % Please edit documentation in R/drain.R
 \name{drain}
 \alias{drain}
+\alias{drain_package}
+\alias{drain_interactive}
 \title{Clear package options}
 \usage{
-drain(slot_name)
+drain(.slot, .pkg)
+
+drain_package(.pkg)
+
+drain_interactive(.slot)
 }
 \arguments{
-\item{slot_name}{(optional) slot to clear from options()}
+\item{.slot}{(optional) slot to clear from `options()`}
+
+\item{.pkg}{(optional) package to clear from `options()`}
 }
 \description{
-Clear options of previously specified content
+Clear options of previously specified content. In most cases, calling `drain`
+with no arguments will be sufficient, but the arguments `.slot` and `.pkg`,
+and their corresponding functions `drain_interactive()` and `drain_package()`
+are provided in case greater control is needed. This is rarely needed for 
+packages, but it is possible to manually specify the use of multiple slots 
+when using `potions::brew()` interactively.
+}
+\details{
+Note that this function is not vectorized, so passing multiple
+values to `.slot` or `.pkg` will fail (e.g. `drain(.slot = c("x", "y"))`).
+Similarly, passing arguments to both `.slot` and `.pkg` will fail.
 }

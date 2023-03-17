@@ -27,7 +27,7 @@ Start-up function to place a list into `options` with a specified
 slot name.
 }
 \details{
-The default method is to use `brew` and set either `pkg` or `slot`, but not
+The default method is to use `brew` and set either `.pkg` or `.slot`, but not
 both. Alternatively you can use `brew_package()` or `brew_interactive()`. 
 Note that if neither `.slot` or `.pkg` are set, `potions` defaults to `.slot`
 , unless `.pkg` information has previously been supplied (and `.slot` 
@@ -37,7 +37,7 @@ situation.
 If no `.data` argument is given, this function sets up an empty `potions` 
 object in `options("potions-pkg")`. See `potions-class` for more information.
 
-If the user repeatly calls `brew()`, later list entries overwrite early 
+If the user repeatedly calls `brew()`, later list entries overwrite early 
 entries. Whole lists are not overwritten unless all top-level entry names 
 match.
 }

@@ -3,19 +3,18 @@
 \name{potions-class}
 \alias{potions-class}
 \alias{create_potions}
-\alias{explore_potions}
 \alias{print.potions}
-\title{Class for `potions` lists}
+\title{Methods for `potions` data}
 \usage{
 create_potions()
 
-explore_potions()
-
 \method{print}{potions}(x, ...)
 }
-\description{
-Early days
+\arguments{
+\item{x}{An object of class `potions`}
 
-Similar to `pour`, but returns all data, while `pour` only ever returns
-data for a single slot or package
+\item{...}{Any further arguments to `print()`}
+}
+\description{
+Data storage for information passed to `{potions}`.
 }

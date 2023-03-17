@@ -1,12 +1,30 @@
-#' Retrieve a specified slot from options
+#' Retrieve information stored using `potions::brew()`
 #' 
-#' UI based on `{here}`; i.e. uses strings separated by commas
+#' This is the main function that most users will call on. It retrieves data 
+#' from a `potions` object stored using `brew()`. The UI for this function is 
+#' based on `{here}`; i.e. uses strings separated by commas to navigate through
+#' nested content.
 #' 
-#' @param ... strings: what slots should be returned
-#' @param slot_name Optional manual override to default slot. Useful for
-#' ensuring no clashes when used within a package
+#' @param ... string: what slots should be returned
+#' @param .slot string: Optional manual override to default slot
+#' @param .pkg string: Optional manual override to default package
 #' @importFrom rlang trace_back
-#' @return a vector
+#' @details  Providing multiple arguments to `...` brings back nested values, 
+#' i.e. `pour("x", "y")` is for the case of an object structured as 
+#' `list(x = list(y = 1))`, rather than `list(x = 1, y = 2)`. For the latter 
+#' case it would be necessary to call with either no arguments 
+#' (`unlist(pour())`), or for greater control, call pour multiple times 
+#' specifying different entries each time (e.g. `z <- c(pour("x"), pour("y"))`).
+#' 
+#' Additional functions are provided in case greater specificity is required. 
+#' `pour_interactive(.slot = ...)` is synonymous with `pour(.slot = ...)`, while 
+#' `pour_package(.pkg = ...)` is synonymous with `pour(.pkg = ...)`. 
+#' `pour_all()` is a shortcut for `getOption("potions-pkg")`; i.e. to show all
+#' data stored using `potions` by any package or slot, and does not accept any
+#' arguments.
+#' @return If no arguments are passed to `...`, returns a `list` from the 
+#' default slot. If `...` is supplied (correctly), then returns a `vector` of 
+#' values matching those names.
 #' 
 #' @export
 
@@ -15,7 +33,6 @@ pour <- function(..., .slot, .pkg){
   if(missing(.slot) & missing(.pkg)){
     package_check <- trace_back()$namespace |> 
                      check_within_pkg()
-  
     if(package_check$within){
       pour_package(..., .pkg = package_check$pkg)
     }else{
@@ -30,27 +47,44 @@ pour <- function(..., .slot, .pkg){
   }
 }
 
-# pour data for a selected package
+#' @rdname pour
+#' @export
 pour_package <- function(..., .pkg){
   dots <- unlist(list(...))
   .data <- check_pour_package(.pkg)
   if(length(dots) > 0){
-    check_is_character(dots, fill = FALSE)
+    check_is_character(dots)
     search_down(.data, dots)
   }else{
     return(.data)
   }
 }
 
-# pour data for a selected slot
+#' @rdname pour
+#' @export
 pour_interactive <- function(..., .slot){
   dots <- unlist(list(...))
   .data <- check_pour_interactive(.slot)
   if(length(dots) > 0){
-    check_is_character(dots, fill = FALSE)
+    check_is_character(dots)
     search_down(.data, dots)
   }else{
     return(.data)
+  }
+}
+
+
+#' @rdname pour
+#' @export
+pour_all <- function(){
+  # check any data has been provided
+  all_data <- getOption("potions-pkg")
+  if(is.null(all_data)){
+    bullets <- c("No data stored by `potions`",
+                 i = "try using `brew()")
+    abort(bullets)
+  }else{
+    return(all_data)
   }
 }
 
