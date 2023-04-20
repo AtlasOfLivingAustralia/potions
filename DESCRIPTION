@@ -11,10 +11,14 @@ Description: Store and retrieve data from `options` using `here()`-like syntax.
 Depends:
     R (>= 4.2.0)
 Imports:
+    glue,
+    lobstr,
     rlang,
     stringi
 Suggests: 
+    knitr,
     pkgload,
+    rmarkdown,
     testthat (>= 3.0.0)
 License: MPL-2.0
 Encoding: UTF-8
@@ -22,3 +26,4 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Config/testthat/edition: 3
+VignetteBuilder: knitr

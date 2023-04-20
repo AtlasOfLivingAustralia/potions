@@ -47,29 +47,34 @@ pour <- function(..., .slot, .pkg){
   }
 }
 
+# testfun <- function(...){
+#   dots <- rlang::exprs(...)
+#   lapply(dots, rlang::as_label)
+# }
+
 #' @rdname pour
 #' @export
 pour_package <- function(..., .pkg){
-  dots <- unlist(list(...))
-  .data <- check_pour_package(.pkg)
+  dots <- enforce_character(...)
+  data <- check_pour_package(.pkg)
   if(length(dots) > 0){
     check_is_character(dots)
-    search_down(.data, dots)
+    search_down(data, dots)
   }else{
-    return(.data)
+    return(data)
   }
 }
 
 #' @rdname pour
 #' @export
 pour_interactive <- function(..., .slot){
-  dots <- unlist(list(...))
-  .data <- check_pour_interactive(.slot)
+  dots <- enforce_character(...)
+  data <- check_pour_interactive(.slot)
   if(length(dots) > 0){
     check_is_character(dots)
-    search_down(.data, dots)
+    search_down(data, dots)
   }else{
-    return(.data)
+    return(data)
   }
 }
 

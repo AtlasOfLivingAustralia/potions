@@ -11,9 +11,7 @@ check_potions_storage <- function(){
 }
 
 #' simple character check
-#' 
-#' Also returns random slot name if one is not provided
-#' @importFrom stringi stri_rand_strings
+#' @importFrom rlang abort
 #' @keywords internal
 #' @noRd
 check_is_character <- function(x){
@@ -22,31 +20,30 @@ check_is_character <- function(x){
   }
 }
 
-# check_is_character <- function(x, fill = FALSE){
-#   if(missing(x)){
-#     if(fill){
-#       result <- stri_rand_strings(n = 1, length = 10)
-#     }else{
-#       abort("Argument `x` is missing, with no default")
-#     }
-#   }else{
-#     result <- x
-#   }
-#   if(!inherits(result, "character")){
-#     abort("Non-character value supplied")
-#   }else{
-#     if(length(result) > 1){
-#       abort("Argument of length-1 expected") # causes problem when applied to pour(...)
-#     }else{
-#       return(result) 
-#     }
-#   }
-# }
-
+#' simple length check
+#' @importFrom rlang abort
+#' @keywords internal
+#' @noRd
 check_length_one <- function(x){
   if(length(x) > 1){abort("Argument of length-1 expected")}
 }
 
+#' simple filename check
+#' @importFrom rlang abort
+#' @keywords internal
+#' @noRd
+check_file <- function(x){
+  check_is_character(x)
+  check_length_one(x)
+  if(!file.exists(x)){
+    abort("File not found")
+  }
+}
+
+#' returns random slot name if one is not provided
+#' @importFrom stringi stri_rand_strings
+#' @keywords internal
+#' @noRd
 enforce_slot_name <- function(x){
   if(missing(x)){
     stri_rand_strings(n = 1, length = 10)
@@ -55,30 +52,46 @@ enforce_slot_name <- function(x){
   }
 }
 
-#' Function to decide whether to default to choosing package-level options
+#' uses rlang to diffuse NSE statements to `pour`
+#' @importFrom rlang exprs
+#' @importFrom rlang as_label
+#' @keywords internal
+#' @noRd
+enforce_character <- function(...){
+  lapply(exprs(...), function(a){
+    if(inherits(a, "name")){
+      as_label(a)
+    }else{
+      a
+    }
+  }) |>
+  unlist()
+}
+
+#' Is `potions` being called from within a package?
 #' 
-#' This is in dev. It is an attempt to determine, at the point that `pour()`
-#' is called, whether the  call is coming from within another package. If so, 
-#' then this function will flag TRUE, and `pour()` will call from 
-#' `getOption("potions-pkg")$packages[[.data$mapping$packages]]`,
+#' At the point that `pour()` is called, this function will determine whether 
+#' the call is coming from within another package. If so, then this function 
+#' will flag TRUE, and `pour()` will call from 
+#' `getOption("potions-pkg")$packages[[data$mapping$packages]]`,
 #' rather than the default for the interactive sessions which is 
-#' `getOption("potions-pkg")$slots[[.data$mapping$current_slot]]`.
+#' `getOption("potions-pkg")$slots[[data$mapping$current_slot]]`.
 #' @param pkg A package name (string)
 #' @param trace result from `rlang::trace_back()`
 #' @keywords internal
 #' @noRd
 check_within_pkg <- function(trace){
-  .data <- getOption("potions-pkg")
+  data <- getOption("potions-pkg")
   result <- list(within = FALSE)
-  if(!is.null(.data)){ # data have been added
-    if(!is.null(.data$mapping$packages)){ # names have been added to .data$mapping$packages (usually by onLoad) 
+  if(!is.null(data)){ # data have been added
+    if(!is.null(data$mapping$packages)){ # names have been added to data$mapping$packages (usually by onLoad) 
       next_pkg <- rev(trace[trace != "potions"])[1] # get package above `potions` in `trace_back()`
       # browser()
       if(
         length(next_pkg) > 0 && !is.na(next_pkg) # some package name exists that isn't NA
         # i.e. you ARE within another package
       ){
-        if(any(.data$mapping$packages == next_pkg)){ # i.e. the package you believe you are in has been registered with `potions`
+        if(any(data$mapping$packages == next_pkg)){ # i.e. the package you believe you are in has been registered with `potions`
           result <- list(within = TRUE, pkg = next_pkg)
         }
       }
@@ -88,6 +101,7 @@ check_within_pkg <- function(trace){
 }
 
 #' Function used in `brew` to decide which .slot to use
+#' 
 #' Note that by the point this function has been called, `check_within_pkg()`
 #' has already returned `FALSE`. Ergo this should never return `.pkg` as an 
 #' option
@@ -107,12 +121,6 @@ check_existing_slots <- function(){
     }
   }
 }
-
-## alternative or additional code:    
-# pkg_info_stored <- any(.data$mapping$packages == trace[])
-# pkg_loaded <- isNamespaceLoaded(pkg) # possibly redundant
-# pkg_in_trace <- any(trace$namespace == pkg)
-# return(pkg_info_stored & pkg_loaded & pkg_in_trace)
 
 ## NOTES on above logic
 # x <- rev(trace_back()$namespace) # returns tree going upwards
@@ -196,16 +204,23 @@ check_pour_interactive <- function(.slot){
   }
 }
 
-# # check data provided to {potions}
-# # Duplicates functionality of `check_potions_storage()`
-# Q: Is this used?
-check_potions_data <- function(.data){
-  if(missing(.data)){
-    abort("Argument `.data` is missing, with no default")
+#' check data provided to {potions}
+#'
+#' This function takes supplied `data` (typically a `list`) and `file` (a file 
+#' path, given as a string), and integrates them into a single `list`. It is 
+#' called by both `brew_package` and `brew_interactive`.
+#' @keywords internal
+#' @noRd
+check_potions_data <- function(data, file){
+  if(!missing(data)){
+    if(!missing(file)){
+      check_file(file)
+      x <- read_config(file)
+      return(update_list(x, data))
+    }else{
+      return(data)
+    }
+  }else{
+    return(NULL)
   }
 }
-#   # if(!inherits(.data, "list")){
-#   #  abort("Argument `.data` must be a list") # should this be enforced?
-#     # Could be useful to allow bespoke classes from different packages
-#   # }
-# }
