@@ -1,13 +1,11 @@
 ---
-title: "Quick Start Guide"
+title: "How to use potions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Quick Start Guide}
+  %\VignetteIndexEntry{How to use potions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -16,12 +14,51 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(potions)
+## Basic usage 
+`{potions}` is a package for easily storing and retrieving information via 
+`options()`. It therefore provides functionality somewhat similar to 
+<a href="https://cran.r-project.org/package=settings">settings</a>, but with 
+syntax based more closely on 
+<a href="https://cran.r-project.org/package=here">here</a>. The intended use of 
+{potions} is for adding novel information to `options()` for use within single 
+packages or workflows. It uses three main functions to deliver this 
+functionality:
+
+- `brew()` to store data
+- `pour()` to retrieve data
+- `drain` to clear data
+
+Because `{potions}` uses a novel S3 object for all data
+storage, it **never overwrites existing global options**, and is therefore safe
+to use without affecting existing workflows. For example, `print.default` takes
+it's default `digits` argument from `getOption("digits")`:
+
+```{r}
+options("digits") # set to 7 by default
+print(pi)
 ```
 
-## Using `{potions}` in the console
+If we use `{potions}` to set `digits`, we do not affect this behaviour. Instead,
+the user must specifically retrieve data using `pour` for these settings to be 
+applied:
 
+```{r}
+potions::brew(list(digits = 3))
+
+print(pi, digits = pour(digits)) # using potions
+print(pi) # default is unaffected
+```
+
+This feature - i.e. storing data in a novel S3 object - means that `{potions}` 
+can distinguish between interactive use in the console versus being called 
+within a package. Data can be provided and used independently by multiple 
+packages, and in the console, without generating conflicts. 
+
+Options stored using `{potions}` are not persistent across sessions; you will
+need to reload options each time you open a new workspace. It is unlikely, 
+therefore, that you will need to 'clear' the data stored by `{potions}` at any
+point. If you do need to remove data, you can do so using `drain()` (without
+any further arguments).
 
 ### Avoiding sharing sensitive information
 Often it is necessary to share a script, but without sharing certain sensitive
@@ -74,7 +111,7 @@ directory; in which case the options there will be loaded automatically by
 `brew()`. If you use to keep the root directory a bit tidier, you can put it
 within a folder in `inst` and provide a relative file path to `brew`, i.e.
 
-```{r, eval=false}
+```{r, eval=FALSE}
 .onLoad <- function(libname, pkgname) {
   if(pkgname == "packagenamehere") {
     potions::brew(file = "./inst/config/config.yml", 
@@ -134,7 +171,7 @@ support automatic configuration imports. For example, if you developed a package
 called `somepackage`, we could tell our users that any file named 
 `somepackage.yml` 
 
-```{r, eval=false}
+```{r, eval=FALSE}
 .onLoad <- function(libname, pkgname) {
   if(pkgname == "somepackage") {
     if(file.exists("somepackage.yml")){
