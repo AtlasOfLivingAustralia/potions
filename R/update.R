@@ -22,6 +22,7 @@ update_package_data <- function(data, provided, pkg){
 }
 
 update_slot_data <- function(data, provided, .slot){
+  # browser()
   if(is.null(provided)){
     return(data)
   }else{

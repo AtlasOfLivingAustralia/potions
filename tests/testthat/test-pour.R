@@ -15,14 +15,14 @@ test_that("pour works with non-repeated names", {
   expect_equal(result, 2)
   rm(result)
   # clean up
+  rm(options_list)
   options(list("potions-pkg" = NULL))
 })
 
 test_that("pour works with repeated names", {
-  options_list <- list(
+  brew(list(
     data = list(x = 1, a = 2),
-    data = list(x = 10, b = 12))
-  brew(options_list)
+    data = list(x = 10, b = 12)))
   # quoted
   result <- pour("data", "a")
   expect_equal(length(result), 1)

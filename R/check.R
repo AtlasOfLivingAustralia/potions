@@ -41,31 +41,31 @@ check_file <- function(x){
 }
 
 #' returns random slot name if one is not provided
+#' 
+#' Note this is only called by `brew_interactive()`, meaning that case for 
+#' `.pkg` does not need to be checked.
 #' @importFrom stringi stri_rand_strings
 #' @keywords internal
 #' @noRd
-enforce_slot_name <- function(x){
+check_slot_name <- function(x){
   if(missing(x)){
-    stri_rand_strings(n = 1, length = 10)
-  }else{
-    x
-  }
-}
-
-#' uses rlang to diffuse NSE statements to `pour`
-#' @importFrom rlang exprs
-#' @importFrom rlang as_label
-#' @keywords internal
-#' @noRd
-enforce_character <- function(...){
-  lapply(exprs(...), function(a){
-    if(inherits(a, "name")){
-      as_label(a)
+    current_list <- getOption("potions-pkg")
+    if(is.null(current_list)){
+      result <- stri_rand_strings(n = 1, length = 10)
     }else{
-      a
+      current_slot <- current_list$mapping$current_slot
+      if(is.null(current_slot)){
+        result <- stri_rand_strings(n = 1, length = 10)
+      }else{
+        result <- current_slot
+      }
     }
-  }) |>
-  unlist()
+  }else{
+    result <- x
+  }
+  check_is_character(result) # for case where .slot is given, but is not a character
+  check_length_one(result)
+  return(result)
 }
 
 #' Is `potions` being called from within a package?

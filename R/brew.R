@@ -2,8 +2,8 @@
 #' 
 #' Start-up function to place a list into `options` with a specified 
 #' slot name.
-#' @param data A `list` containing data to be stored via `options()`; or 
-#' optionally 
+#' @param ... One or more `==` statements giving attributes to be stored; or 
+#' alternatively a `list` containing the same.
 #' @param file string: optional file containing data to be stored via `options()`.
 #' Valid formats are `.yml` or `.json`. 
 #' @param .slot string: optional name to mandate where data is stored. Defaults 
@@ -20,17 +20,17 @@
 #' information has not). This might be undesirable in a package development 
 #' situation.
 #' 
-#' If both the `data` and `file` arguments are empty, this function sets up an 
+#' If both `...` and `file` arguments are empty, this function sets up an 
 #' empty `potions` object in `options("potions-pkg")`; See `potions-class` for 
-#' more information on this data type. If both the `data` and `file` arguments 
+#' more information on this data type. If `...` and `file` arguments 
 #' are provided, they will be amalgamated. If there are identical names in both
-#' lists, those in `data` are chosen.
+#' lists, those in `...` are chosen.
 #'  
 #' If the user repeatedly calls `brew()`, later list entries overwrite early 
 #' entries. Whole lists are not overwritten unless all top-level entry names 
 #' match.
 #' @export
-brew <- function(data, file, .slot, .pkg){
+brew <- function(..., file, .slot, .pkg){
   
   # determine behavior based on supplied arguments
   has_slot <- !missing(.slot)
@@ -39,29 +39,35 @@ brew <- function(data, file, .slot, .pkg){
     if(has_pkg){
       abort("Both `.slot` and `.pkg` have been set; please choose one")
     }
-    brew_interactive(data, file, .slot)
+    brew_interactive(..., file = file, .slot = .slot)
   }else{
     if(has_pkg){
-      brew_package(data, file, .pkg)
+      brew_package(..., file = file, .pkg = .pkg)
     }else{ # if .slot and .pkg missing, choose based on call location
       package_check <- trace_back()$namespace |> 
         check_within_pkg()
       if(package_check$within){
-        brew_package(data, file, .pkg = package_check$pkg)
+        brew_package(..., file = file, .pkg = package_check$pkg)
       }else{
         lookup <- check_existing_slots()
         switch(lookup$method,
-               "all_empty" = {brew_interactive(data, file)}, # no data; .slot is random
-               # ".pkg" = {brew_package(data, .pkg = lookup$value)}, # impossible
-               ".slot" = {brew_interactive(data, file, .slot = lookup$value)}) 
+               "all_empty" = {brew_interactive(..., 
+                                               file = file)}, # no data; .slot is random
+               ".slot" = {brew_interactive(..., 
+                                           file = file, 
+                                           .slot = lookup$value)}) 
       }
     }
   }
 }
 
 #' @rdname brew
+#' @importFrom rlang enquos
 #' @export
-brew_package <- function(data, file, .pkg){
+brew_package <- function(..., file, .pkg){
+  # parse dots
+  dots <- enquos(..., .ignore_empty = "all")
+  data <- parse_quosures(dots)
   # check supplied data
   data <- check_potions_data(data, file)
   # check package info
@@ -76,12 +82,15 @@ brew_package <- function(data, file, .pkg){
 }
 
 #' @rdname brew
+#' @importFrom rlang enquos
 #' @export
-brew_interactive <- function(data, file, .slot){
-  data <- check_potions_data(data, file) # check supplied data
-  .slot <- enforce_slot_name(.slot) # generates a random slot if not given
-  check_is_character(.slot) # for case where .slot is given, but is not a character
-  check_length_one(.slot)
+brew_interactive <- function(..., file, .slot){
+  # parse dots
+  dots <- enquos(..., .ignore_empty = "all")
+  data <- parse_quosures(dots)
+  # check supplied data
+  data <- check_potions_data(data, file) 
+  .slot <- check_slot_name(.slot)
   current_list <- check_potions_storage() |> 
                   update_default_name(.slot = .slot) |>
                   update_slot_data(data, .slot)

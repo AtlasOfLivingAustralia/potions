@@ -7,7 +7,26 @@ test_that("`brew` sets up an empty `potions` object when called with no args", {
   options(list("potions-pkg" = NULL)) # set to empty
 })
 
-test_that("`brew` stores data in a randomly-named slot when no args given", {
+test_that("`brew` fails when objects are passed that are not lists", {
+  expect_error(brew(integer(1, 2, 3)))
+})
+
+test_that("`brew` fails when user passes `=` instead of `==`", {
+  expect_error(brew(year = 10))
+})
+
+test_that("`brew` handles basic NSE", {
+  brew(x == 10, y == "something")
+  x <- pour_all()
+  expect_equal(x$mapping$current_slot, names(x$slots)[1])
+  variable_types <- unlist(lapply(x$slots[[1]], class))
+  names(variable_types) <- NULL
+  expect_equal(variable_types, c("numeric", "character"))
+  expect_equal(names(x$slots[[1]]), c("x", "y"))
+  options(list("potions-pkg" = NULL))
+})
+
+test_that("`brew` stores data in a randomly-named slot when .slot not given", {
   options_list <- list(
     data = list(x = 1, y = 2),
     metadata = list(a = 10, b = 12))
@@ -18,7 +37,16 @@ test_that("`brew` stores data in a randomly-named slot when no args given", {
   options(list("potions-pkg" = NULL))
 })
 
-test_that("sequential, unlabelled called to `brew` get added to the same slot",{
+test_that("`brew` stores NSE data in a randomly-named slot when .slot not given", {
+  brew(data == list(x = 1, y = 2), 
+       metadata == list(a = 10, b = 12))
+  x <- pour_all()
+  expect_equal(x$mapping$current_slot, names(x$slots)[1])
+  expect_equal(as.integer(unlist(x$slots)), c(1, 2, 10, 12))
+  options(list("potions-pkg" = NULL))
+})
+
+test_that("sequential, unlabelled calls to `brew` get added to the same slot",{
   brew(list(x = 1))
   brew(list(y = 2))
   x <- pour_all()
@@ -29,6 +57,16 @@ test_that("sequential, unlabelled called to `brew` get added to the same slot",{
   options(list("potions-pkg" = NULL))
 })
 
+test_that("sequential, unlabelled NSE calls to `brew` get added to the same slot",{
+  brew(x == 1)
+  brew(y == 2)
+  x <- pour_all()
+  expect_equal(x$mapping$current_slot, names(x$slots)[1])
+  expect_equal(as.integer(unlist(x$slots)), c(1, 2))
+  expect_equal(names(x$slots[[1]]), c("x", "y"))
+  expect_equal(as.integer(lengths(x)), c(2, 1, 0))
+  options(list("potions-pkg" = NULL))
+})
 
 test_that("`brew` stores data in .slot when given", {
   options_list <- list(
@@ -87,3 +125,22 @@ test_that("`drain` removes data when no args given", {
 #   drain("potions_test_2")
 #   expect_null(pour(slot_name = "potions_test_2"))
 # })
+
+test_that("`brew()` detects current slot during successive calls", {
+  brew(x == 10)
+  result1 <- pour_all()
+  brew(x == 10)
+  result2 <- pour_all()
+  expect_equal(result1, result2)
+  rm(result1, result2)
+  options(list("potions-pkg" = NULL))
+})
+
+test_that("`brew()` doesn't call names from the Global environment", {
+  x <- "something"
+  brew(x == 10)
+  result <- pour()
+  expect_equal(names(result), "x")
+  rm(result, x)
+  options(list("potions-pkg" = NULL))
+})

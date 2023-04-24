@@ -6,15 +6,15 @@
 \alias{brew_interactive}
 \title{Set up potions for easy data retrieval}
 \usage{
-brew(data, file, .slot, .pkg)
+brew(..., file, .slot, .pkg)
 
-brew_package(data, file, .pkg)
+brew_package(..., file, .pkg)
 
-brew_interactive(data, file, .slot)
+brew_interactive(..., file, .slot)
 }
 \arguments{
-\item{data}{A \code{list} containing data to be stored via \code{options()}; or
-optionally}
+\item{...}{One or more \code{==} statements giving attributes to be stored; or
+alternatively a \code{list} containing the same.}
 
 \item{file}{string: optional file containing data to be stored via \code{options()}.
 Valid formats are \code{.yml} or \code{.json}.}
@@ -38,11 +38,11 @@ Note that if neither \code{.slot} or \code{.pkg} are set, \code{potions} default
 information has not). This might be undesirable in a package development
 situation.
 
-If both the \code{data} and \code{file} arguments are empty, this function sets up an
+If both \code{...} and \code{file} arguments are empty, this function sets up an
 empty \code{potions} object in \code{options("potions-pkg")}; See \code{potions-class} for
-more information on this data type. If both the \code{data} and \code{file} arguments
+more information on this data type. If \code{...} and \code{file} arguments
 are provided, they will be amalgamated. If there are identical names in both
-lists, those in \code{data} are chosen.
+lists, those in \code{...} are chosen.
 
 If the user repeatedly calls \code{brew()}, later list entries overwrite early
 entries. Whole lists are not overwritten unless all top-level entry names

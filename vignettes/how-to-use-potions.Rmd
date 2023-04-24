@@ -19,7 +19,9 @@ knitr::opts_chunk$set(
 `options()`. It therefore provides functionality somewhat similar to 
 <a href="https://cran.r-project.org/package=settings">settings</a>, but with 
 syntax based more closely on 
-<a href="https://cran.r-project.org/package=here">here</a>. The intended use of 
+<a href="https://cran.r-project.org/package=here">here</a>. Unlike, `{here}`,
+`{potions}` supports non-standard evaluation, meaning that arguments can be 
+passed to `{potions}` without being quoted. The intended use of 
 {potions} is for adding novel information to `options()` for use within single 
 packages or workflows. It uses three main functions to deliver this 
 functionality:
@@ -43,7 +45,7 @@ the user must specifically retrieve data using `pour` for these settings to be
 applied:
 
 ```{r}
-potions::brew(list(digits = 3))
+potions::brew(digits == 3)
 
 print(pi, digits = pour(digits)) # using potions
 print(pi) # default is unaffected

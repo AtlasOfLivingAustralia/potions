@@ -47,15 +47,13 @@ pour <- function(..., .slot, .pkg){
   }
 }
 
-# testfun <- function(...){
-#   dots <- rlang::exprs(...)
-#   lapply(dots, rlang::as_label)
-# }
-
 #' @rdname pour
+#' @importFrom rlang enquos
 #' @export
 pour_package <- function(..., .pkg){
-  dots <- enforce_character(...)
+  dots <- enquos(..., .ignore_empty = "all") |>
+          parse_quosures() |>
+          unlist()
   data <- check_pour_package(.pkg)
   if(length(dots) > 0){
     check_is_character(dots)
@@ -66,9 +64,12 @@ pour_package <- function(..., .pkg){
 }
 
 #' @rdname pour
+#' @importFrom rlang enquos
 #' @export
 pour_interactive <- function(..., .slot){
-  dots <- enforce_character(...)
+  dots <- enquos(..., .ignore_empty = "all") |>
+          parse_quosures() |>
+          unlist()
   data <- check_pour_interactive(.slot)
   if(length(dots) > 0){
     check_is_character(dots)
@@ -78,7 +79,6 @@ pour_interactive <- function(..., .slot){
   }
 }
 
-
 #' @rdname pour
 #' @export
 pour_all <- function(){
@@ -86,19 +86,19 @@ pour_all <- function(){
   all_data <- getOption("potions-pkg")
   if(is.null(all_data)){
     bullets <- c("No data stored by `potions`",
-                 i = "try using `brew()")
+                 i = "try using `brew()`")
     abort(bullets)
   }else{
     return(all_data)
   }
 }
 
-# internal, recursive function to do the searching
+#' Internal, recursive function to do the searching
+#' 
+#' Note this could probably be re-implemented using `purrr` at some point
+#' @noRd
+#' @keywords Internal
 search_down <- function(x, lookup_strings){
-  
-  ## print output: for testing purposes only
-  # cat(paste0("strings: ", paste(unlist(lookup_strings), collapse = " | "), "\n"))
-  
   if(is.null(names(x))){ # skip levels without names
     if(length(x) < 1){ # if nothing below that level, return empty vector (NULL)
       c()
@@ -117,31 +117,3 @@ search_down <- function(x, lookup_strings){
     }
   }
 }
-
-## ALTERNATIVE IMPLEMENTATIONS
-## simple option; unlist
-## note that this is probably inefficient
-# lookup <- unlist(dots) |> paste(collapse = ".")
-# y <- unlist(x)
-# result <- y[grepl(lookup, names(y))]
-# if(length(result) < 1){
-#   NULL
-# }else{
-#   names(result) <- NULL
-#   result
-# }
-
-## alternative: use parse
-# string <- paste0("x |> ",
-#   paste(
-#     paste0("getElement(dots[[", seq_along(dots), "]])"),
-#     collapse = " |> "))
-# eval(parse(text = string))
-# # only returns one element
-
-## original working example
-# for(i in seq_along(dots)){
-#   x <- getElement(x, dots[i]])
-# }
-# x
-## only returns one element
