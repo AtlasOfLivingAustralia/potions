@@ -48,3 +48,17 @@ If the user repeatedly calls \code{brew()}, later list entries overwrite early
 entries. Whole lists are not overwritten unless all top-level entry names
 match.
 }
+\examples{
+# basic usage is to pass expressions
+brew(x == 1)
+
+# lists are also permitted
+brew(list(x = 2))
+
+# as are passing lists as objects
+my_list <- list(x = 3)
+brew(my_list)
+
+# optional clean-up
+drain()
+}

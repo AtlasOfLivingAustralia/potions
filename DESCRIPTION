@@ -7,14 +7,15 @@ Authors@R:
              family = "Westgate",
              email = "martin.westgate@csiro.au",
              role = c("aut", "cre")))
-Description: Store and retrieve data from `options` using `here()`-like syntax. 
+Description: Store and retrieve data from `options` using `{here}`-like syntax. 
 Depends:
     R (>= 4.2.0)
 Imports:
-    glue,
+    jsonlite,
     lobstr,
     rlang,
-    stringi
+    stringi,
+    yaml
 Suggests: 
     knitr,
     pkgload,

@@ -1,0 +1,127 @@
+---
+title: "Using potions for package development"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using potions for package development}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+To use `{potions}` in a package development situation, set `onLoad.R` to
+
+```{r, eval=FALSE}
+.onLoad <- function(libname, pkgname) {
+  if(pkgname == "packagenamehere") {
+    potions::brew(.pkg = "packagenamehere")
+  }
+}
+```
+This is important because it tells `{potions}` that you are developing a package,
+what that package is called, and where future calls to `brew()` from within that
+package should place their data.
+
+
+### Using `config` files
+One useful feature of `{potions}` is the option to import data via a `config`
+file e.g. a file named `config.yml` might contain the following information:
+
+```{r, eval=FALSE}
+name: Martin Westgate
+year: 2023
+favourite-color: green
+```
+
+The 'easiest' place to put the `config` file is in your packages' root 
+directory; in which case the options there will be loaded automatically by 
+`brew()`. If you use to keep the root directory a bit tidier, you can put it
+within a folder in `inst` and provide a relative file path to `brew()`, i.e.
+
+```{r, eval=FALSE}
+.onLoad <- function(libname, pkgname) {
+  if(pkgname == "packagenamehere") {
+    potions::brew(file = "./inst/config/config.yml", 
+                  .pkg = "packagenamehere")
+  }
+}
+```
+
+
+### Building a wrapper function
+Often in a package you will want users to call your own configuration function,
+rather than call `brew()` directly. This provides greater control over the names 
+& types (classes) of data stored by `{potions}`, which in turn gives you - the 
+developer - greater certainty when calling those data *within* your package via
+`pour()`.
+
+For example, you might want to specify that a specific argument is supplied as 
+numeric:
+
+```{r, eval = FALSE}
+packagename_config <- function(fontsize = 10){
+  if(!is.numeric(fontsize)){
+    rlang::abort("Argument `fontsize` must be a number")
+  }
+  brew(list(fontsize = fontsize))
+}
+```
+
+An additional benefit of writing a wrapper function is to allow users to provide
+their own `config` file. The easiest way to do this is to support a `file`
+argument within your own function, then pass this directly to `brew()`:
+
+```{r, eval = FALSE}
+packagename_config <- function(file){
+  brew(file = file)
+}
+```
+
+This approach is risky, however, as it doesn't allow any checks. An alternative
+is to intercept the file, run your own checks, then pass the result as data:
+
+```{r, eval = FALSE}
+packagename_config <- function(file){
+  data <- potions::read_config(x)
+  # add any checks to `data` that are needed here
+  if(length(names(data)) != length(data)){
+    rlang::abort("Not all entries are named!")
+  }
+  # pass to `brew`
+  brew(data)
+}
+```
+
+
+### Auto-import of configuration settings
+A final - and entirely optional - step might be to integrate the above steps to
+support automatic configuration imports. For example, if you developed a package 
+called `somepackage`, we could tell our users that any file named 
+`somepackage.yml` 
+
+```{r, eval=FALSE}
+.onLoad <- function(libname, pkgname) {
+  if(pkgname == "somepackage") {
+    if(file.exists("somepackage.yml")){
+      potions::brew(file = "somepackage.yml", 
+                    .pkg = "somepackage")  
+    }else{
+      potions::brew(.pkg = "somepackage")  
+    }
+  }
+}
+```
+This approach has some advantages:
+
+- users don't have to do any work to apply their configuration settings every time a package is loaded
+- users can easily disable configuration import, by removing `somepackage.yml` from the working directory
+- there is unlikely to be a conflict where incorrect configuration settings are imported, because the filename requirements are deliberately restrictive
+
+However, any approach that moves information around without the user 
+specifically requesting it comes with risks, especially where that information
+is itself sensitive. Ergo some care is needed with this method.

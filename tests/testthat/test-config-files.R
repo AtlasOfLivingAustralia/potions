@@ -5,7 +5,7 @@ test_that("read_config_file works for yml", {
                       "package-potionstest" = list("date-accessed" = "2023-04-20"))
   yaml::write_yaml(config_list, file = "config.yml")
   # run read_config_file, check
-  x <- read_config_file("config.yml")
+  x <- read_config("config.yml")
   expect_equal(x, config_list)
   # clean up
   unlink("config.yml")
@@ -18,7 +18,7 @@ test_that("read_config_file works for json", {
                       organisation = "Atlas of Living Australia",
                       "package-potionstest" = list("date-accessed" = "2023-04-20"))
   jsonlite::write_json(config_list, path = "config.json", auto_unbox = TRUE)
-  x <- read_config_file("config.json")
+  x <- read_config("config.json")
   expect_equal(x, config_list)
   unlink("config.json")
   rm(x, config_list)

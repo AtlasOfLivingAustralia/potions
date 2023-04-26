@@ -25,7 +25,21 @@
 #' @return If no arguments are passed to `...`, returns a `list` from the 
 #' default slot. If `...` is supplied (correctly), then returns a `vector` of 
 #' values matching those names.
+#' @examples 
+#' # first import some data
+#' brew(x == 1, y == list(a = 2, b = 3))
 #' 
+#' # get all data
+#' pour()
+#' 
+#' # get only data from slot x
+#' pour(x)
+#' 
+#' # get nested data
+#' pour(y, a)
+#' 
+#' # optional clean-up
+#' drain()
 #' @export
 
 pour <- function(..., .slot, .pkg){

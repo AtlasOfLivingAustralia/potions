@@ -48,3 +48,19 @@ Additional functions are provided in case greater specificity is required.
 data stored using \code{potions} by any package or slot, and does not accept any
 arguments.
 }
+\examples{
+# first import some data
+brew(x == 1, y == list(a = 2, b = 3))
+
+# get all data
+pour()
+
+# get only data from slot x
+pour(x)
+
+# get nested data
+pour(y, a)
+
+# optional clean-up
+drain()
+}

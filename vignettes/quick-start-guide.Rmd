@@ -1,0 +1,107 @@
+---
+title: "Quick start guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quick start guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+`{potions}` is a package for easily storing and retrieving information via 
+`options()`. It therefore provides functionality somewhat similar to 
+<a href="https://cran.r-project.org/package=settings">settings</a>, but with 
+syntax based more closely on 
+<a href="https://cran.r-project.org/package=here">here</a>. Unlike, `{here}`,
+`{potions}` supports non-standard evaluation, meaning that arguments can be 
+passed to `{potions}` without being quoted. The intended use of 
+{potions} is for adding novel information to `options()` for use within single 
+packages or workflows. 
+
+
+## Basic usage
+`{potions}` has three basic functions:
+
+- `brew()` to store data
+- `pour()` to retrieve data
+- `drain()` to clear data
+
+The first step is to store data using `brew()`, which accepts data in three 
+formats:
+
+- `dplyr`-like expressions, e.g. `brew(x == 1)`
+- A `list`, e.g. `brew(list(x = 1))`
+- A configuration file, e.g. `brew(file = "my-config-file.yml")`
+
+Information stored using `brew` can be retrieved using `pour`:
+
+```{r}
+library(potions)
+
+brew(x == 1)
+
+paste0("The value of x is ", pour(x))
+
+drain()
+```
+
+
+## Interactions with global options
+Because `{potions}` uses a novel S3 object for all data
+storage, it **never overwrites existing global options**, and is therefore safe
+to use without affecting existing workflows. For example, `print.default` takes
+it's default `digits` argument from `getOption("digits")`:
+
+```{r}
+options("digits") # set to 7 by default
+print(pi)
+```
+
+If we use `{potions}` to set `digits`, we do not affect this behaviour. Instead,
+the user must specifically retrieve data using `pour` for these settings to be 
+applied:
+
+```{r}
+library(potions)
+brew(digits == 3)
+
+print(pi, digits = pour(digits)) # using potions
+print(pi) # default is unaffected
+```
+
+This feature - i.e. storing data in a novel S3 object - means that `{potions}` 
+can distinguish between interactive use in the console versus being called 
+within a package. Data can be provided and used independently by multiple 
+packages, and in the console, without generating conflicts. 
+
+Options stored using `{potions}` are not persistent across sessions; you will
+need to reload options each time you open a new workspace. It is unlikely, 
+therefore, that you will need to 'clear' the data stored by `{potions}` at any
+point. If you do need to remove data, you can do so using `drain()` (without
+any further arguments).
+
+
+## Using `config` files
+Often it is necessary to share a script, but without sharing certain sensitive
+information necessary to run the code. A common example is API keys or other
+sensitive information required to download data from a web service. In such 
+cases, the default, interactive method of using `brew()` is insufficient, i.e.
+
+```{r eval = FALSE}
+# start of script
+brew(list("my-secret-key" = "123456")) # shares secret information
+```
+
+To avoid this problem, you can instead supply the path to a file containing that
+information, i.e.
+
+```{r eval = FALSE}
+brew(file = "config.yml") # hides secret information
+```
+You can then simply add the corresponding file name to your `gitignore`, and 
+your script will still run, without sharing sensitive information.

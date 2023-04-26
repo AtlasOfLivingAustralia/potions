@@ -13,17 +13,21 @@ knitr::opts_chunk$set(
 
 <img src="man/figures/potions-logo.png" align="left" style="margin: 0px 10px 0px 0px;" alt="" width="120"/><h2>potions: easy options management</h2>
 
-Often it is useful to set bespoke options for a single workflow, or within a single package, without altering global options that influence other users or packages. This is possible `base::options()` and related functions, however doing so requires some bespoke knowledge. `{potions}` makes options management as easy as possible, by decreasing programmers' cognitive burden while storing and retrieving information. It does this by following three guiding principles:
+Often it is useful to set bespoke options for a single workflow, or within a 
+single package, without altering global options that influence other users or 
+packages. This is possible `base::options()` and related functions, however 
+doing so requires some bespoke knowledge. `{potions}` makes options management 
+as easy as possible, by decreasing programmers' cognitive burden while storing 
+and retrieving information. It does this by following three guiding principles:
 
 - **minimalist**: `{potions}` has only three core functions: `brew()`, `pour()` and `drain()`
 - **laconic**: functions use as few characters as possible
 - **familiar**: uses a UI for data retrieval based on the `{here}` package
 
-In combination, these features should make it easy for users and developers to manage options using {potions}.
+In combination, these features should make it easy for users and developers to 
+manage options using {potions}.
 
-## Getting started
-
-Install from GitHub:
+To install from GitHub:
 ```{r eval=FALSE}
 install.packages("remotes")
 remotes::install_github("atlasoflivingaustralia/potions")
@@ -39,9 +43,9 @@ Then you can use `pour()` to get the information you need:
 ```{r}
 pour() |> str() # get all data
 
-pour("x") # get a subset of data
+pour(x) # get a subset of data
 
-pour("y", "a") # for nested data
+pour(y, a) # for nested data
 ```
 
 When you are done, simply use `drain()` to clean up:
@@ -50,13 +54,3 @@ drain()
 
 pour() # nothing to return
 ```
-
-To use in a package development situation, set `onLoad.R` to
-```{r, eval=FALSE}
-.onLoad <- function(libname, pkgname) {
-  if(pkgname == "my_package_name_here") {
-    potions::brew(.pkg = "my_package_name_here")
-  }
-}
-```
-You can then use the above functions as you would in the console.

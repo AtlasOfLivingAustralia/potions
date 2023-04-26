@@ -1,4 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^doc$
+^docs$
 ^Meta$
+^pkgdown$
+README.Rmd

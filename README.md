@@ -22,9 +22,7 @@ by following three guiding principles:
 In combination, these features should make it easy for users and
 developers to manage options using {potions}.
 
-## Getting started
-
-Install from GitHub:
+To install from GitHub:
 
 ``` r
 install.packages("remotes")
@@ -48,10 +46,10 @@ pour() |> str() # get all data
 #>   ..$ a: num 2
 #>   ..$ b: num 4
 
-pour("x") # get a subset of data
+pour(x) # get a subset of data
 #> [1] 1
 
-pour("y", "a") # for nested data
+pour(y, a) # for nested data
 #> [1] 2
 ```
 
@@ -63,15 +61,3 @@ drain()
 pour() # nothing to return
 #> list()
 ```
-
-To use in a package development situation, set `onLoad.R` to
-
-``` r
-.onLoad <- function(libname, pkgname) {
-  if(pkgname == "my_package_name_here") {
-    potions::brew(.pkg = "my_package_name_here")
-  }
-}
-```
-
-You can then use the above functions as you would in the console.
