@@ -1,17 +1,17 @@
-brewtest_nopkg <- function(.data){
-  brew(.data)
+brewtest_nopkg <- function(...){
+  brew(...)
 }
 
-brewtest_pkg <- function(.data){
-  brew(.data, .pkg = "potionstest")
+brewtest_pkg <- function(...){
+  brew(..., .pkg = "potionstest")
 }
 
-pourtest_nopkg <- function(){
-  pour()
+pourtest_nopkg <- function(...){
+  pour(...)
 }
 
-pourtest_pkg <- function(){
-  pour(.pkg = "potionstest")
+pourtest_pkg <- function(...){
+  pour(..., .pkg = "potionstest")
 }
 
 draintest_nopkg <- function(){

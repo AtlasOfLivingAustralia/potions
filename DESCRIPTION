@@ -1,6 +1,6 @@
 Package: potions
 Type: Package
-Title: Lightweight Options Management
+Title: Easy Options Management
 Version: 0.1.0
 Authors@R:
     c(person(given = "Martin",
@@ -8,8 +8,11 @@ Authors@R:
              email = "martin.westgate@csiro.au",
              role = c("aut", "cre")))
 Description: Store and retrieve data from `options` using `{here}`-like syntax. 
+    `{potions}` makes it straightforward to update and retrieve options, 
+    either in the workspace or during package development, without overwriting
+    global options.
 Depends:
-    R (>= 4.2.0)
+    R (>= 4.1.0)
 Imports:
     jsonlite,
     lobstr,
@@ -22,6 +25,8 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0)
 License: MPL-2.0
+URL: https://github.com/AtlasOfLivingAustralia/potions
+BugReports: https://github.com/AtlasOfLivingAustralia/potions/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

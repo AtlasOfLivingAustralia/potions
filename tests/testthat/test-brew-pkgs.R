@@ -1,4 +1,3 @@
-
 test_that("`brew` works for packages", {
   # load a testing package
   pkg_path <- testthat::test_path("potionstest")
@@ -44,7 +43,6 @@ test_that("`brew` works for packages", {
   options(list("potions-pkg" = NULL)) # options
 })
 
-
 test_that("`brew() with no args defaults to brew_interactive, even when a pkg is loaded", {
   # load a testing package
   pkg_path <- testthat::test_path("potionstest")
@@ -61,7 +59,6 @@ test_that("`brew() with no args defaults to brew_interactive, even when a pkg is
   pkgload::unload("potionstest") # package
   options(list("potions-pkg" = NULL))
 })
-
 
 test_that("`drain()` removes data from .slot when no args given, even if a .pkg has been loaded", {
   # load a testing package
