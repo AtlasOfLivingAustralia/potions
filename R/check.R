@@ -204,7 +204,7 @@ check_pour_interactive <- function(.slot){
   }
 }
 
-#' check data provided to {potions}
+#' check data provided to `potions`
 #'
 #' This function takes supplied `data` (typically a `list`) and `file` (a file 
 #' path, given as a string), and integrates them into a single `list`. It is 

@@ -15,6 +15,13 @@ create_potions()
 
 \item{...}{Any further arguments to \code{print()}}
 }
+\value{
+In the case of \code{create_potions()}, an empty \code{potions} object.
+\code{print.potions()} displays a \code{potions} object using \code{lobstr::tree()}.
+}
 \description{
-Data storage for information passed to \code{{potions}}.
+This package stores data in a list-like format, named class \code{potions}. It
+contains three entries: \code{slots} contains data stored in 'interactive' mode;
+\code{packages} contains data from packages built using \code{potions}; and \code{mapping}
+stores data to understand the contents of the other two slots.
 }

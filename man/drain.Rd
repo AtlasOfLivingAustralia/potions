@@ -17,6 +17,10 @@ drain_interactive(.slot)
 
 \item{.pkg}{(optional) package to clear from \code{options()}}
 }
+\value{
+This function never returns an object; it is called for its' side-
+effect of removing data from \code{options()}.
+}
 \description{
 Clear options of previously specified content. In most cases, calling \code{drain}
 with no arguments will be sufficient, but the arguments \code{.slot} and \code{.pkg},

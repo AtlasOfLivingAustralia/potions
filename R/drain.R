@@ -11,6 +11,8 @@
 #' Similarly, passing arguments to both `.slot` and `.pkg` will fail.
 #' @param .slot (optional) slot to clear from `options()`
 #' @param .pkg (optional) package to clear from `options()`
+#' @returns This function never returns an object; it is called for its' side-
+#' effect of removing data from `options()`.
 #' @importFrom rlang trace_back
 #' @export
 drain <- function(.slot, .pkg){

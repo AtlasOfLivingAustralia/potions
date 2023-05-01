@@ -2,8 +2,9 @@
 #' 
 #' This is the main function that most users will call on. It retrieves data 
 #' from a `potions` object stored using `brew()`. The UI for this function is 
-#' based on `{here}`; i.e. uses strings separated by commas to navigate through
-#' nested content.
+#' based on the `here` package, in that it uses list names separated by commas 
+#' to navigate through nested content. It differs from `here` in not requiring
+#' those names to be quoted.
 #' 
 #' @param ... string: what slots should be returned
 #' @param .slot string: Optional manual override to default slot
@@ -22,7 +23,7 @@
 #' `pour_all()` is a shortcut for `getOption("potions-pkg")`; i.e. to show all
 #' data stored using `potions` by any package or slot, and does not accept any
 #' arguments.
-#' @return If no arguments are passed to `...`, returns a `list` from the 
+#' @returns If no arguments are passed to `...`, returns a `list` from the 
 #' default slot. If `...` is supplied (correctly), then returns a `vector` of 
 #' values matching those names.
 #' @examples 

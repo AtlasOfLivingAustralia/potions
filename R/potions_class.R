@@ -1,7 +1,12 @@
 #' Methods for `potions` data
 #' 
-#' Data storage for information passed to `{potions}`.
+#' This package stores data in a list-like format, named class `potions`. It 
+#' contains three entries: `slots` contains data stored in 'interactive' mode;
+#' `packages` contains data from packages built using `potions`; and `mapping`
+#' stores data to understand the contents of the other two slots.
 #' @name potions-class
+#' @returns In the case of `create_potions()`, an empty `potions` object. 
+#' `print.potions()` displays a `potions` object using `lobstr::tree()`.
 #' @export
 create_potions <- function(){
   potions_default <- list(

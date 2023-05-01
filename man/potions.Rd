@@ -8,18 +8,18 @@
 Often it is useful to set bespoke options for a single workflow, or within
 a single package, without altering global options that influence other
 users or packages. This is possible \code{base::options()} and related functions,
-however doing so requires some bespoke knowledge. \code{{potions}} makes options
+however doing so requires some bespoke knowledge. \code{potions} makes options
 management as easy as possible, by decreasing programmers' cognitive burden
 while storing and retrieving information. It does this by following three
 guiding principles:
 
 \itemize{
-\item{minimalist: \code{{potions}} has only three core functions}
+\item{minimalist: \code{potions} has only three core functions}
 \item{laconic: functions use as few characters as possible}
 \item{familiar: uses a UI for data retrieval based on the \code{{here}} package}
 }
 In combination, these features should make it easy for users and developers
-to manage options using \code{{potions}}.
+to manage options using \code{potions}.
 }
 \section{Functions}{
 

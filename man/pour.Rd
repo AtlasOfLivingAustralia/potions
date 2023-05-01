@@ -30,8 +30,9 @@ values matching those names.
 \description{
 This is the main function that most users will call on. It retrieves data
 from a \code{potions} object stored using \code{brew()}. The UI for this function is
-based on \code{{here}}; i.e. uses strings separated by commas to navigate through
-nested content.
+based on the \code{here} package, in that it uses list names separated by commas
+to navigate through nested content. It differs from \code{here} in not requiring
+those names to be quoted.
 }
 \details{
 Providing multiple arguments to \code{...} brings back nested values,

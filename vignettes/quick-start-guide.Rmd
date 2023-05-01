@@ -13,19 +13,19 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-`{potions}` is a package for easily storing and retrieving information via 
+`potions` is a package for easily storing and retrieving information via 
 `options()`. It therefore provides functionality somewhat similar to 
 <a href="https://cran.r-project.org/package=settings">`{settings}`</a>, but with 
 syntax based more closely on 
 <a href="https://cran.r-project.org/package=here">`{here}`</a>. Unlike `{here}`,
-however, `{potions}` supports non-standard evaluation, meaning that arguments c
-an be passed to `{potions}` without being quoted. The intended use of 
-`{potions}` is for adding novel information to `options()` for use within single 
+however, `potions` supports non-standard evaluation, meaning that arguments c
+an be passed to `potions` without being quoted. The intended use of 
+`potions` is for adding novel information to `options()` for use within single 
 packages or workflows. 
 
 
 ## Basic usage
-`{potions}` has three basic functions:
+`potions` has three basic functions:
 
 - `brew()` to store data
 - `pour()` to retrieve data
@@ -52,7 +52,7 @@ drain()
 
 
 ## Interactions with global options
-Because `{potions}` uses a novel `S3` object for all data
+Because `potions` uses a novel `S3` object for all data
 storage, it **never overwrites existing global options**, and is therefore safe
 to use without affecting existing workflows. For example, `print.default` takes
 it's default `digits` argument from `getOption("digits")`:
@@ -62,7 +62,7 @@ options("digits") # set to 7 by default
 print(pi)
 ```
 
-If we use `{potions}` to set `digits`, we do not affect this behaviour. Instead,
+If we use `potions` to set `digits`, we do not affect this behaviour. Instead,
 the user must specifically retrieve data using `pour` for these settings to be 
 applied:
 
@@ -74,14 +74,14 @@ print(pi, digits = pour(digits)) # using potions
 print(pi) # default is unaffected
 ```
 
-This feature - i.e. storing data in a novel `S3` object - means that `{potions}` 
+This feature - i.e. storing data in a novel `S3` object - means that `potions` 
 can distinguish between interactive use in the console versus being called 
 within a package. Data can be provided and used independently by multiple 
 packages, and in the console, without generating conflicts. 
 
-Options stored using `{potions}` are not persistent across sessions; you will
+Options stored using `potions` are not persistent across sessions; you will
 need to reload options each time you open a new workspace. It is unlikely, 
-therefore, that you will need to 'clear' the data stored by `{potions}` at any
+therefore, that you will need to 'clear' the data stored by `potions` at any
 point. If you do need to remove data, you can do so using `drain()` (without
 any further arguments).
 
@@ -108,7 +108,7 @@ You can then simply add the corresponding file name to your `gitignore`, and
 your script will still run, without sharing sensitive information.
 
 
-## Using `{potions}` in package development
+## Using `potions` in package development
 When weighing up architectural decisions about how packages should share 
 information between functions, there are a few solutions that developers 
 can choose between:
@@ -121,10 +121,10 @@ there is no override, it is possible to temporarily reset `options()` within a
 function. In these cases, CRAN requires that the initial state be restored
 after use, for which `on.exit()` is a sensible choice (See [Advanced R section 6.7.4](https://adv-r.hadley.nz/functions.html#on-exit)).
 - Finally, where there is a need for dynamic, package-wide options that can be
-changed by the developer or the user, packages such as `{potions}` or 
+changed by the developer or the user, packages such as `potions` or 
 [settings](https://cran.r-project.org/package=settings) can be valuable.
 
-To use `{potions}` in a package development situation, 
+To use `potions` in a package development situation, 
 create a file in the `R` directory called `onLoad.R`, containing the following
 code:
 
@@ -136,7 +136,7 @@ code:
 }
 ```
 
-This is important because it tells `{potions}` that you are developing a package,
+This is important because it tells `potions` that you are developing a package,
 what that package is called, and where future calls to `brew()` from within that
 package should place their data. It is also possible to add defaults here, e.g.
 
@@ -153,7 +153,7 @@ package should place their data. It is also possible to add defaults here, e.g.
 
 Often when developing a package, you will want users to call your own 
 configuration function, rather than call `brew()` directly. This provides 
-greater control over the names & types of data stored by `{potions}`, which in 
+greater control over the names & types of data stored by `potions`, which in 
 turn gives you - the developer - greater certainty when calling those data 
 *within* your package via `pour()`. For example, you might want to specify that 
 a specific argument is supplied as numeric:

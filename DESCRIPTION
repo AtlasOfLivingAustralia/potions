@@ -7,10 +7,10 @@ Authors@R:
              family = "Westgate",
              email = "martin.westgate@csiro.au",
              role = c("aut", "cre")))
-Description: Store and retrieve data from `options` using `{here}`-like syntax. 
-    `{potions}` makes it straightforward to update and retrieve options, 
-    either in the workspace or during package development, without overwriting
-    global options.
+Description: Store and retrieve data from options() using syntax derived from
+    the 'here' package. 'potions' makes it straightforward to update and 
+    retrieve options, either in the workspace or during package development, 
+    without overwriting global options.
 Depends:
     R (>= 4.1.0)
 Imports:
@@ -30,6 +30,6 @@ BugReports: https://github.com/AtlasOfLivingAustralia/potions/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 VignetteBuilder: knitr
