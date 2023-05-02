@@ -22,6 +22,12 @@ by following three guiding principles:
 In combination, these features should make it easy for users and
 developers to manage options using potions.
 
+To install from CRAN
+
+``` r
+install.packages("potions")
+```
+
 To install from GitHub:
 
 ``` r
