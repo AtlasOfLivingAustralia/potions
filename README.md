@@ -1,17 +1,18 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<img src="man/figures/logo.png" align="left" style="margin: 0px 10px 0px 0px;" alt="" width="120"/>
+<img src="man/figures/logo.png" align="left" style="margin: 0px 25px 0px 0px;" alt="" width="120"/>
 <h2>
-potions: easy options management
+easy options management
 </h2>
 
 Often it is useful to set bespoke options for a single workflow, or
 within a single package, without altering global options that influence
-other users or packages. This is possible `base::options()` and related
-functions, however doing so requires some bespoke knowledge. `potions`
-makes options management as easy as possible, by decreasing programmers’
-cognitive burden while storing and retrieving information. It does this
-by following three guiding principles:
+other users or packages. This is possible using `base::options()` and
+related functions, however doing so requires care, and occasionally some
+bespoke knowledge. `potions` makes options management as easy as
+possible, by decreasing programmers’ cognitive burden while storing and
+retrieving information. It does this by following three guiding
+principles:
 
 - **minimalist**: `potions` has only three core functions: `brew()`,
   `pour()` and `drain()`
@@ -19,9 +20,9 @@ by following three guiding principles:
 - **familiar**: uses a UI for data retrieval based on the `here` package
 
 In combination, these features should make it easy for users and
-developers to manage options using potions.
+developers to manage options using `potions`.
 
-To install from CRAN
+To install from CRAN:
 
 ``` r
 install.packages("potions")
@@ -34,7 +35,7 @@ install.packages("remotes")
 remotes::install_github("atlasoflivingaustralia/potions")
 ```
 
-To store data in options, use `brew()`
+To store data in `options()`, use `brew()`
 
 ``` r
 library(potions)

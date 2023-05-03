@@ -78,10 +78,10 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><img src="reference/figures/logo.png" align="left" style="margin: 0px 10px 0px 0px;" alt="" width="120"><h2>
-potions: easy options management
+  <main id="main" class="col-md-9"><img src="reference/figures/logo.png" align="left" style="margin: 0px 25px 0px 0px;" alt="" width="120"><h2>
+easy options management
 </h2>
-<p>Often it is useful to set bespoke options for a single workflow, or within a single package, without altering global options that influence other users or packages. This is possible <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code> and related functions, however doing so requires some bespoke knowledge. <code>potions</code> makes options management as easy as possible, by decreasing programmers’ cognitive burden while storing and retrieving information. It does this by following three guiding principles:</p>
+<p>Often it is useful to set bespoke options for a single workflow, or within a single package, without altering global options that influence other users or packages. This is possible using <code><a href="https://rdrr.io/r/base/options.html" class="external-link">base::options()</a></code> and related functions, however doing so requires care, and occasionally some bespoke knowledge. <code>potions</code> makes options management as easy as possible, by decreasing programmers’ cognitive burden while storing and retrieving information. It does this by following three guiding principles:</p>
 <ul>
 <li>
 <strong>minimalist</strong>: <code>potions</code> has only three core functions: <code><a href="reference/brew.html">brew()</a></code>, <code><a href="reference/pour.html">pour()</a></code> and <code><a href="reference/drain.html">drain()</a></code>
@@ -91,15 +91,15 @@ potions: easy options management
 <li>
 <strong>familiar</strong>: uses a UI for data retrieval based on the <code>here</code> package</li>
 </ul>
-<p>In combination, these features should make it easy for users and developers to manage options using potions.</p>
-<p>To install from CRAN</p>
+<p>In combination, these features should make it easy for users and developers to manage options using <code>potions</code>.</p>
+<p>To install from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"potions"</span><span class="op">)</span></span></code></pre></div>
 <p>To install from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"atlasoflivingaustralia/potions"</span><span class="op">)</span></span></code></pre></div>
-<p>To store data in options, use <code><a href="reference/brew.html">brew()</a></code></p>
+<p>To store data in <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code>, use <code><a href="reference/brew.html">brew()</a></code></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://potions.ala.org.au">potions</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/brew.html">brew</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
