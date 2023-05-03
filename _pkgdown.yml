@@ -1,0 +1,10 @@
+url: https://potions.ala.org.au
+template:
+  bootstrap: 5
+  bslib:
+    code_font: {google: "Source Code Pro"}
+    pkgdown-nav-height: 150px
+  params:
+    bootswatch: lux
+development:
+  mode: auto

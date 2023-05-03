@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<img src="man/figures/potions-logo.png" align="left" style="margin: 0px 10px 0px 0px;" alt="" width="120"/>
+<img src="man/figures/logo.png" align="left" style="margin: 0px 10px 0px 0px;" alt="" width="120"/>
 <h2>
 potions: easy options management
 </h2>
@@ -16,8 +16,7 @@ by following three guiding principles:
 - **minimalist**: `potions` has only three core functions: `brew()`,
   `pour()` and `drain()`
 - **laconic**: functions use as few characters as possible
-- **familiar**: uses a UI for data retrieval based on the `{here}`
-  package
+- **familiar**: uses a UI for data retrieval based on the `here` package
 
 In combination, these features should make it easy for users and
 developers to manage options using potions.

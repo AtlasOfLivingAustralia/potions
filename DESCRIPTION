@@ -25,7 +25,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0)
 License: MPL-2.0
-URL: https://github.com/AtlasOfLivingAustralia/potions
+URL: https://potions.ala.org.au
 BugReports: https://github.com/AtlasOfLivingAustralia/potions/issues
 Encoding: UTF-8
 LazyData: true
