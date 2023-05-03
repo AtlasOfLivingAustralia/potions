@@ -1,3 +1,21 @@
+test_that("pour returns a list when length > 1", {
+  brew(list(x = 1, y = 2))
+  result <- pour()
+  expect_true(inherits(result, "list"))
+  expect_equal(length(result), 2)
+  rm(result)
+  options(list("potions-pkg" = NULL))
+})
+
+test_that("pour returns a vector when length == 1", {
+  brew(list(x = 1L, y = 2L))
+  result <- pour(x)
+  expect_true(inherits(result, "integer"))
+  expect_equal(length(result), 1)
+  rm(result)
+  options(list("potions-pkg" = NULL))
+})
+
 test_that("pour works with non-repeated names", {
   options_list <- list(
     data = list(x = 1, y = 2),

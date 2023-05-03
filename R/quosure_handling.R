@@ -109,6 +109,6 @@ parse_call <- function(x){
                      list()
            names(result) <- as_label(y[[2]])
            return(result)},
-         "list" = {eval_tidy(x)},
-         {abort("Unknown argument passed to `brew()`")})
+         eval_tidy(x) # parse anything else
+       )
 }

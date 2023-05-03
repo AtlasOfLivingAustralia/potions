@@ -126,7 +126,7 @@ search_down <- function(x, lookup_strings){
     names(result) <- unlist(lapply(lookup, names))
   
     if(length(lookup_strings) <= 1){
-      unlist(result)
+      result
     }else{
       search_down(result, lookup_strings[-1])
     }

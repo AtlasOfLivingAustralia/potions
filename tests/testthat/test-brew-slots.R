@@ -7,6 +7,14 @@ test_that("`brew` sets up an empty `potions` object when called with no args", {
   options(list("potions-pkg" = NULL)) # set to empty
 })
 
+test_that("`brew` accepts data passed within functions", {
+  testfun <- function(){list(x = 1, y = 2)}
+  brew(testfun())
+  expect_equal(pour(), list(x = 1, y = 2))
+  rm(testfun)
+  options(list("potions-pkg" = NULL)) # set to empty
+})
+
 test_that("`brew` fails when objects are passed that are not lists", {
   expect_error(brew(integer(1, 2, 3)))
 })
