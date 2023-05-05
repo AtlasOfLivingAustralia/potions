@@ -64,6 +64,7 @@ pour <- function(..., .slot, .pkg){
 
 #' @rdname pour
 #' @importFrom rlang enquos
+#' @importFrom purrr pluck
 #' @export
 pour_package <- function(..., .pkg){
   dots <- enquos(..., .ignore_empty = "all") |>
@@ -72,7 +73,7 @@ pour_package <- function(..., .pkg){
   data <- check_pour_package(.pkg)
   if(length(dots) > 0){
     check_is_character(dots)
-    search_down(data, dots)
+    pluck(data, !!!dots)
   }else{
     return(data)
   }
@@ -80,6 +81,7 @@ pour_package <- function(..., .pkg){
 
 #' @rdname pour
 #' @importFrom rlang enquos
+#' @importFrom purrr pluck
 #' @export
 pour_interactive <- function(..., .slot){
   dots <- enquos(..., .ignore_empty = "all") |>
@@ -88,7 +90,7 @@ pour_interactive <- function(..., .slot){
   data <- check_pour_interactive(.slot)
   if(length(dots) > 0){
     check_is_character(dots)
-    search_down(data, dots)
+    pluck(data, !!!dots)
   }else{
     return(data)
   }
@@ -105,30 +107,5 @@ pour_all <- function(){
     abort(bullets)
   }else{
     return(all_data)
-  }
-}
-
-#' Internal, recursive function to do the searching
-#' 
-#' Note this could probably be re-implemented using `purrr` at some point
-#' @noRd
-#' @keywords Internal
-search_down <- function(x, lookup_strings){
-  if(is.null(names(x))){ # skip levels without names
-    if(length(x) < 1){ # if nothing below that level, return empty vector (NULL)
-      c()
-    }else{
-      search_down(do.call(c, x), lookup_strings)
-    }
-  }else{
-    lookup <- x[names(x) == lookup_strings[1]]
-    result <- do.call(c, lookup)
-    names(result) <- unlist(lapply(lookup, names))
-  
-    if(length(lookup_strings) <= 1){
-      result
-    }else{
-      search_down(result, lookup_strings[-1])
-    }
   }
 }

@@ -57,11 +57,15 @@ match.
 brew(x == 1)
 
 # lists are also permitted
-brew(list(x = 2))
+list(x = 2) |> brew()
 
 # as are passing lists as objects
 my_list <- list(x = 3)
-brew(my_list)
+my_list |> brew()
+
+# or within a function
+my_fun <- function(){list(x = 1, y = 2)}
+my_fun() |> brew()
 
 # optional clean-up
 drain()

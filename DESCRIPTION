@@ -16,6 +16,7 @@ Depends:
 Imports:
     jsonlite,
     lobstr,
+    purrr,
     rlang,
     stringi,
     yaml

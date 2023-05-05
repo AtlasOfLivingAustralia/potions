@@ -209,6 +209,7 @@ check_pour_interactive <- function(.slot){
 #' This function takes supplied `data` (typically a `list`) and `file` (a file 
 #' path, given as a string), and integrates them into a single `list`. It is 
 #' called by both `brew_package` and `brew_interactive`.
+#' @importFrom purrr list_modify
 #' @keywords internal
 #' @noRd
 check_potions_data <- function(data, file){
@@ -216,11 +217,11 @@ check_potions_data <- function(data, file){
     if(!missing(file)){
       check_file(file)
       x <- read_config(file)
-      return(update_list(x, data))
+      return(list_modify(data, x)) # note priority given to x
     }else{
       return(data)
     }
   }else{
-    return(NULL)
+    abort("No data supplied to `brew()`")
   }
 }

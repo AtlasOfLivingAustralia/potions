@@ -14,6 +14,7 @@
 #' @returns This function never returns an object; it is called for its' side-
 #' effect of removing data from `options()`.
 #' @importFrom rlang trace_back
+#' @importFrom purrr zap
 #' @export
 drain <- function(.slot, .pkg){
   
@@ -47,6 +48,7 @@ drain_package <- function(.pkg){
   current_list <- getOption("potions-pkg")
   if(!is.null(current_list)){
     if(any(names(current_list$packages) == .pkg)){
+      # at this point, switch to using `zap` for removing list content
       current_list$packages[[.pkg]] <- list()
     }
     options(list("potions-pkg" = current_list))    
@@ -63,6 +65,7 @@ drain_interactive <- function(.slot){
     }else{
       abort("no valid slot found")
     }
+    # at this point, switch to using `zap` for removing list content
     current_list$slots[[.slot]] <- list()
     options(list("potions-pkg" = current_list))
   }

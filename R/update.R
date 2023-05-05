@@ -1,43 +1,68 @@
-update_package_names <- function(data, pkg){
-  if(!any(data$mapping$packages == pkg)){
-    data$mapping$packages <- unique(c(data$mapping$packages, pkg))
+#' Function to add new package name to `potions` object
+#' @noRd
+#' @keywords Internal
+update_package_names <- function(data, .pkg){
+  if(!any(data$mapping$packages == .pkg)){
+    data$mapping$packages <- unique(c(data$mapping$packages, .pkg))
   }
   return(data)
 }
 
+#' Function to update the 'current' slot in a `potions` object
+#' @noRd
+#' @keywords Internal
 update_default_name <- function(data, .slot){
   data$mapping$current_slot <- .slot
   return(data)
 }
 
-update_package_data <- function(data, provided, pkg){
+#' Function to update data in `potions`
+#' 
+#' This is basically the workhorse function underneath `brew()`
+#' @importFrom rlang abort
+#' @importFrom purrr pluck
+#' @importFrom purrr pluck<-
+#' @importFrom purrr list_modify
+#' @noRd
+#' @keywords Internal
+update_data <- function(data, 
+                        provided, 
+                        .slot = NULL, 
+                        .pkg = NULL, 
+                        method = "path"){
+  
+  # set error catching behavior for each type
+  # in practice this shouldn't be needed, as `update_data()` is only ever called internally
+  # but this should help debug in case of error
+  if(is.null(.slot) && is.null(.pkg)){
+    abort("Neither `.slot` nor `.pkg` provided to `update_data()`; please choose one")
+  }
+  if(!is.null(.slot) && !is.null(.pkg)){
+    abort("Both `.slot` and `.pkg` provided to `update_data()`; please choose one")
+  }else{
+    # now set a vector for drilling down into lists using `search_down()`
+    if(!is.null(.slot)){
+      index_vector <- c("slots", .slot)
+    }else{
+      index_vector <- c("packages", .pkg)
+    }
+  }
+
+  # if some information is missing, return the other
+  # Note if both are missing, `brew()` should have errored by now
   if(is.null(provided)){
     return(data)
-  }else{
-    data$packages[[pkg]] <- update_list(
-      initial = data$packages[[pkg]],
-      update = provided)
-    return(data)
   }
-}
-
-update_slot_data <- function(data, provided, .slot){
-  # browser()
-  if(is.null(provided)){
-    return(data)
-  }else{
-    data$slots[[.slot]] <- update_list(
-      initial = data$slots[[.slot]],
-      update = provided)
-    return(data)
+  if(is.null(data)){
+    return(provided)
   }
-}
-
-# internal function to update lists with information given by the user
-update_list <- function(initial, update){
-  if(is.null(initial)){
-    update
+  
+  # update data
+  if(is.null(pluck(data, !!!index_vector))){
+    pluck(data, !!!index_vector) <- provided
   }else{
-    c(initial[!(names(initial) %in% names(update))], update)
+    pluck(data, !!!index_vector) <- list_modify(pluck(data, !!!index_vector),
+                                                provided)   
   }
+  return(data)
 }

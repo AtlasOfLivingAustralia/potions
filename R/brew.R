@@ -36,16 +36,28 @@
 #' brew(x == 1)
 #' 
 #' # lists are also permitted
-#' brew(list(x = 2))
+#' list(x = 2) |> brew()
 #' 
 #' # as are passing lists as objects
 #' my_list <- list(x = 3)
-#' brew(my_list)
+#' my_list |> brew()
+#' 
+#' # or within a function
+#' my_fun <- function(){list(x = 1, y = 2)}
+#' my_fun() |> brew()
 #' 
 #' # optional clean-up
 #' drain()
 #' @export
 brew <- function(..., file, .slot, .pkg){
+  
+  # new thinking:
+  # `method` should be one of:
+    # "overwrite": new `...` completely replaces existing data
+    # "path": new path structures are enforced, and overwritten if provided
+    # "leaf": names are given for terminal nodes only
+  # note that for depth-1 lists, "leaf" and "path" are identical
+  # when first used, "overwrite" and "path" are identical
   
   # determine behavior based on supplied arguments
   has_slot <- !missing(.slot)
@@ -91,7 +103,7 @@ brew_package <- function(..., file, .pkg){
   # create current_list
   current_list <- check_potions_storage() |>
     update_package_names(.pkg) |>
-    update_package_data(provided = data, pkg = .pkg)
+    update_data(provided = data, pkg = .pkg)
   # push to options
   options(list("potions-pkg" = current_list))
 }
@@ -108,6 +120,6 @@ brew_interactive <- function(..., file, .slot){
   .slot <- check_slot_name(.slot)
   current_list <- check_potions_storage() |> 
                   update_default_name(.slot = .slot) |>
-                  update_slot_data(data, .slot)
+                  update_data(data, .slot = .slot)
   options(list("potions-pkg" = current_list))
 }

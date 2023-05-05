@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_config.R
 \name{read_config}
 \alias{read_config}
-\title{Get configuration data from a file}
+\title{Handle configuration data from a file}
 \usage{
 read_config(file)
 }
