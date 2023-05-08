@@ -35,8 +35,9 @@ Start-up function to place a list into \code{options} with a specified
 slot name.
 }
 \details{
-The default method is to use \code{brew} and set either \code{.pkg} or \code{.slot}, but not
-both. Alternatively you can use \code{brew_package()} or \code{brew_interactive()}.
+The default method is to use \code{brew} without setting either \code{.pkg} or \code{.slot}
+(but not both), and letting \code{potions} determine which slot to use. If greater
+control is needed, you can use \code{brew_package()} or \code{brew_interactive()}.
 Note that if neither \code{.slot} or \code{.pkg} are set, \code{potions} defaults to \code{.slot}
 , unless \code{.pkg} information has previously been supplied (and \code{.slot}
 information has not). This might be undesirable in a package development

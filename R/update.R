@@ -47,7 +47,7 @@ update_data <- function(data,
       index_vector <- c("packages", .pkg)
     }
   }
-
+  
   # if some information is missing, return the other
   # Note if both are missing, `brew()` should have errored by now
   if(is.null(provided)){
@@ -58,11 +58,11 @@ update_data <- function(data,
   }
   
   # update data
-  if(is.null(pluck(data, !!!index_vector))){
+  current_list <- pluck(data, !!!index_vector)
+  if(is.null(current_list)){
     pluck(data, !!!index_vector) <- provided
   }else{
-    pluck(data, !!!index_vector) <- list_modify(pluck(data, !!!index_vector),
-                                                provided)   
+    pluck(data, !!!index_vector) <- list_modify(current_list, !!!provided)
   }
   return(data)
 }

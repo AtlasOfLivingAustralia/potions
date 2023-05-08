@@ -81,7 +81,7 @@ test_that("pour returns null with incorrect slot names", {
   options(list("potions-pkg" = NULL))
 })
 
-test_that("pour works when some levels are unnamed", {
+test_that("pour works returns null when some levels are unnamed", {
   options_list <- list(
     user = list(uuid = "owner-uuid"),
     params = list(
@@ -97,10 +97,10 @@ test_that("pour works when some levels are unnamed", {
   brew(options_list)
   # quoted
   result <- pour("params", "datasets", "url")
-  expect_equal(result, c("a/valid/path_1", "a/valid/path_2"))
+  expect_null(result)
   # unquoted
   result <- pour(params, datasets, url)
-  expect_equal(result, c("a/valid/path_1", "a/valid/path_2"))
+  expect_null(result)
   # clean up
   options(list("potions-pkg" = NULL))
 })

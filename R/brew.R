@@ -13,8 +13,9 @@
 #' instead of `slot`.
 #' @importFrom rlang abort
 #' @details 
-#' The default method is to use `brew` and set either `.pkg` or `.slot`, but not
-#' both. Alternatively you can use `brew_package()` or `brew_interactive()`. 
+#' The default method is to use `brew` without setting either `.pkg` or `.slot`
+#' (but not both), and letting `potions` determine which slot to use. If greater
+#' control is needed, you can use `brew_package()` or `brew_interactive()`. 
 #' Note that if neither `.slot` or `.pkg` are set, `potions` defaults to `.slot`
 #' , unless `.pkg` information has previously been supplied (and `.slot` 
 #' information has not). This might be undesirable in a package development 
@@ -50,14 +51,6 @@
 #' drain()
 #' @export
 brew <- function(..., file, .slot, .pkg){
-  
-  # new thinking:
-  # `method` should be one of:
-    # "overwrite": new `...` completely replaces existing data
-    # "path": new path structures are enforced, and overwritten if provided
-    # "leaf": names are given for terminal nodes only
-  # note that for depth-1 lists, "leaf" and "path" are identical
-  # when first used, "overwrite" and "path" are identical
   
   # determine behavior based on supplied arguments
   has_slot <- !missing(.slot)
@@ -103,7 +96,7 @@ brew_package <- function(..., file, .pkg){
   # create current_list
   current_list <- check_potions_storage() |>
     update_package_names(.pkg) |>
-    update_data(provided = data, pkg = .pkg)
+    update_data(provided = data, .pkg = .pkg)
   # push to options
   options(list("potions-pkg" = current_list))
 }

@@ -103,8 +103,8 @@ test_that("`brew` updates data in .slot when given", {
   expect_equal(names(x$slots)[1], "test")
   expect_equal(x$mapping$current_slot, names(x$slots)[1])
   expect_equal(length(x$slots[[1]]), 3)
-  expect_equal(as.integer(lengths(x$slots[[1]])), c(2, 1, 1))
-  expect_equal(names(x$slots[[1]]), c("metadata", "data", "something"))
+  expect_equal(as.integer(lengths(x$slots[[1]])), c(1, 2, 1))
+  expect_equal(names(x$slots[[1]]), c("data", "metadata", "something"))
   options(list("potions-pkg" = NULL))
 })
 
