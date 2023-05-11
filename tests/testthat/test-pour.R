@@ -1,5 +1,5 @@
 test_that("pour returns a list when length > 1", {
-  brew(list(x = 1, y = 2))
+  brew(x = 1, y = 2)
   result <- pour()
   expect_true(inherits(result, "list"))
   expect_equal(length(result), 2)
@@ -8,8 +8,8 @@ test_that("pour returns a list when length > 1", {
 })
 
 test_that("pour returns a vector when length == 1", {
-  brew(list(x = 1L, y = 2L))
-  result <- pour(x)
+  brew(x = 1L, y = 2L)
+  result <- pour("x")
   expect_true(inherits(result, "integer"))
   expect_equal(length(result), 1)
   rm(result)
@@ -22,18 +22,11 @@ test_that("pour works with non-repeated names", {
     metadata = list(a = 10, b = 12))
   brew(options_list)
   # pour_all()
-  # try quoted
   result <- pour("data", "y")
   expect_equal(length(result), 1)
   expect_equal(result, 2)
-  rm(result)
-  # and unquoted
-  result <- pour(data, y)
-  expect_equal(length(result), 1)
-  expect_equal(result, 2)
-  rm(result)
   # clean up
-  rm(options_list)
+  rm(result, options_list)
   options(list("potions-pkg" = NULL))
 })
 
@@ -45,13 +38,8 @@ test_that("pour works with repeated names", {
   result <- pour("data", "a")
   expect_equal(length(result), 1)
   expect_equal(result, 2)
-  rm(result)
-  # unquoted
-  result <- pour(data, a)
-  expect_equal(length(result), 1)
-  expect_equal(result, 2)
-  rm(result)
   # clean up
+  rm(result)
   options(list("potions-pkg" = NULL))
 })
 
@@ -71,17 +59,15 @@ test_that("pour returns null with incorrect slot names", {
     data = list(x = 1, a = 2),
     data = list(x = 10, b = 12))
   brew(options_list)
-  # quoted
   result <- pour("data", "y")
   expect_null(result)
-  # unquoted
-  result <- pour(data, y)
-  expect_null(result)
   # clean up
+  rm(result)
   options(list("potions-pkg" = NULL))
 })
 
 test_that("pour works returns null when some levels are unnamed", {
+  # note: this should error at `brew()`, not `pour()` - move this test!
   options_list <- list(
     user = list(uuid = "owner-uuid"),
     params = list(
@@ -95,11 +81,7 @@ test_that("pour works returns null when some levels are unnamed", {
     )
   )
   brew(options_list)
-  # quoted
-  result <- pour("params", "datasets", "url")
-  expect_null(result)
-  # unquoted
-  result <- pour(params, datasets, url)
+  pour("params", "datasets", "url")
   expect_null(result)
   # clean up
   options(list("potions-pkg" = NULL))

@@ -67,9 +67,7 @@ pour <- function(..., .slot, .pkg){
 #' @importFrom purrr pluck
 #' @export
 pour_package <- function(..., .pkg){
-  dots <- enquos(..., .ignore_empty = "all") |>
-          parse_quosures() |>
-          unlist()
+  dots <- list(...)
   data <- check_pour_package(.pkg)
   if(length(dots) > 0){
     check_is_character(dots)
@@ -84,9 +82,7 @@ pour_package <- function(..., .pkg){
 #' @importFrom purrr pluck
 #' @export
 pour_interactive <- function(..., .slot){
-  dots <- enquos(..., .ignore_empty = "all") |>
-          parse_quosures() |>
-          unlist()
+  dots <- list(...)
   data <- check_pour_interactive(.slot)
   if(length(dots) > 0){
     check_is_character(dots)
@@ -106,6 +102,7 @@ pour_all <- function(){
                  i = "try using `brew()`")
     abort(bullets)
   }else{
+    class(all_data) <- "potions"
     return(all_data)
   }
 }

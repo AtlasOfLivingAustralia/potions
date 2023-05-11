@@ -1,7 +1,8 @@
 # potions 0.1.1
 
+- move to `{purrr}` as main engine for list management
+- remove NSE capabilities for consistency with `{purrr}` and `{here}`
 - `pour()` returns a `list` by default, rather than a vector
-- `parse_call()` now tries to evaluate anything that isn't `==` (rather than just `list`s), meaning functions can be passed to `brew()`
 
 
 # potions 0.1.0

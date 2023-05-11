@@ -2,7 +2,7 @@
 #' 
 #' Start-up function to place a list into `options` with a specified 
 #' slot name.
-#' @param ... One or more `==` statements giving attributes to be stored; or 
+#' @param ... One or more `=` statements giving attributes to be stored; or 
 #' alternatively a `list` containing the same.
 #' @param file string: optional file containing data to be stored via `options()`.
 #' Valid formats are `.yml` or `.json`. 
@@ -33,8 +33,8 @@
 #' @returns This function never returns an object; it is called for its' side-
 #' effect of caching data using `options()`.
 #' @examples 
-#' # basic usage is to pass expressions
-#' brew(x == 1)
+#' # basic usage is to pass arguments using `=`
+#' brew(x = 1)
 #' 
 #' # lists are also permitted
 #' list(x = 2) |> brew()
@@ -85,11 +85,8 @@ brew <- function(..., file, .slot, .pkg){
 #' @importFrom rlang enquos
 #' @export
 brew_package <- function(..., file, .pkg){
-  # parse dots
-  dots <- enquos(..., .ignore_empty = "all")
-  data <- parse_quosures(dots)
   # check supplied data
-  data <- check_potions_data(data, file)
+  data <- check_potions_data(list(...), file)
   # check package info
   check_is_character(.pkg)
   check_length_one(.pkg)
@@ -105,11 +102,8 @@ brew_package <- function(..., file, .pkg){
 #' @importFrom rlang enquos
 #' @export
 brew_interactive <- function(..., file, .slot){
-  # parse dots
-  dots <- enquos(..., .ignore_empty = "all")
-  data <- parse_quosures(dots)
   # check supplied data
-  data <- check_potions_data(data, file) 
+  data <- check_potions_data(list(...), file) 
   .slot <- check_slot_name(.slot)
   current_list <- check_potions_storage() |> 
                   update_default_name(.slot = .slot) |>

@@ -13,7 +13,7 @@ brew_package(..., file, .pkg)
 brew_interactive(..., file, .slot)
 }
 \arguments{
-\item{...}{One or more \code{==} statements giving attributes to be stored; or
+\item{...}{One or more \code{=} statements giving attributes to be stored; or
 alternatively a \code{list} containing the same.}
 
 \item{file}{string: optional file containing data to be stored via \code{options()}.
@@ -54,8 +54,8 @@ entries. Whole lists are not overwritten unless all top-level entry names
 match.
 }
 \examples{
-# basic usage is to pass expressions
-brew(x == 1)
+# basic usage is to pass arguments using `=`
+brew(x = 1)
 
 # lists are also permitted
 list(x = 2) |> brew()
