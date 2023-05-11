@@ -29,7 +29,7 @@ update_data <- function(data,
                         provided, 
                         .slot = NULL, 
                         .pkg = NULL, 
-                        method = "path"){
+                        leaves = FALSE){
   
   # set error catching behavior for each type
   # in practice this shouldn't be needed, as `update_data()` is only ever called internally
@@ -57,12 +57,21 @@ update_data <- function(data,
     return(provided)
   }
   
-  # update data
+  # get currently stored data from `options()`
   current_list <- pluck(data, !!!index_vector)
-  if(is.null(current_list)){
-    pluck(data, !!!index_vector) <- provided
+  
+  # update this data with user-supplied information
+  if(leaves){
+    browser()
+
+    update_leaves(data)
   }else{
-    pluck(data, !!!index_vector) <- list_modify(current_list, !!!provided)
+    if(is.null(current_list)){
+      pluck(data, !!!index_vector) <- provided
+    }else{
+      pluck(data, !!!index_vector) <- list_modify(current_list, !!!provided)
+    }
   }
+  
   return(data)
 }

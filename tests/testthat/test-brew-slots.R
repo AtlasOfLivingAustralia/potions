@@ -23,6 +23,24 @@ test_that("`brew` fails when user passes `==` instead of `=`", {
   expect_error(brew(year == 10))
 })
 
+test_that("`brew()` fails when some levels are unnamed", {
+  options_list <- list(
+    user = list(uuid = "owner-uuid"),
+    params = list(
+      function_name = "ensemble",
+      datasets = list(
+        list(mimetype = "image/geotiff", # unnamed step
+             url = "a/valid/path_1"),
+        list(mimetype = "image/geotiff",
+             url = "a/valid/path_2")
+      )
+    )
+  )
+  expect_error(brew(options_list))
+  rm(options_list)
+})
+
+
 test_that("`brew` stores data in a randomly-named slot when .slot not given", {
   options_list <- list(
     data = list(x = 1, y = 2),
@@ -120,4 +138,10 @@ test_that("`brew()` doesn't call names from the Global environment", {
   expect_equal(names(result), "x")
   rm(result, x)
   options(list("potions-pkg" = NULL))
+})
+
+test_that("`brew()` works when `leaves = TRUE`", {
+  brew(list(data1 = list(x = 1, y = 2), 
+            data2 = list(a = 5, b = 10)))
+  brew(x = 1, b = 2, leaves = TRUE)
 })

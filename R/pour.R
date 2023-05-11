@@ -67,7 +67,7 @@ pour <- function(..., .slot, .pkg){
 #' @importFrom purrr pluck
 #' @export
 pour_package <- function(..., .pkg){
-  dots <- list(...)
+  dots <- unlist(list(...))
   data <- check_pour_package(.pkg)
   if(length(dots) > 0){
     check_is_character(dots)
@@ -82,7 +82,7 @@ pour_package <- function(..., .pkg){
 #' @importFrom purrr pluck
 #' @export
 pour_interactive <- function(..., .slot){
-  dots <- list(...)
+  dots <- unlist(list(...))
   data <- check_pour_interactive(.slot)
   if(length(dots) > 0){
     check_is_character(dots)

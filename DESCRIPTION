@@ -17,7 +17,7 @@ Imports:
     jsonlite,
     lobstr,
     purrr,
-    reshape2,
+    rrapply,
     rlang,
     stringi,
     yaml

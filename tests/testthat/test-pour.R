@@ -65,24 +65,3 @@ test_that("pour returns null with incorrect slot names", {
   rm(result)
   options(list("potions-pkg" = NULL))
 })
-
-test_that("pour works returns null when some levels are unnamed", {
-  # note: this should error at `brew()`, not `pour()` - move this test!
-  options_list <- list(
-    user = list(uuid = "owner-uuid"),
-    params = list(
-      function_name = "ensemble",
-      datasets = list(
-        list(mimetype = "image/geotiff",
-             url = "a/valid/path_1"),
-        list(mimetype = "image/geotiff",
-             url = "a/valid/path_2")
-      )
-    )
-  )
-  brew(options_list)
-  pour("params", "datasets", "url")
-  expect_null(result)
-  # clean up
-  options(list("potions-pkg" = NULL))
-})

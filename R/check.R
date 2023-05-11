@@ -20,6 +20,16 @@ check_is_character <- function(x){
   }
 }
 
+#' simple logical check for 'leaves' arg
+#' @importFrom rlang abort
+#' @keywords internal
+#' @noRd
+check_is_logical <- function(x){
+  if(!is.logical(x)){
+    abort("Argument `leaves` must be logical")
+  }
+}
+
 #' simple length check
 #' @importFrom rlang abort
 #' @keywords internal
@@ -212,32 +222,46 @@ check_pour_interactive <- function(.slot){
 #' path, given as a string), and integrates them into a single `list`. It is 
 #' called by both `brew_package` and `brew_interactive`.
 #' @importFrom purrr list_modify
-#' @importFrom reshape2 melt
 #' @importFrom rlang abort
 #' @keywords internal
 #' @noRd
 check_potions_data <- function(data, file){
-  if(!missing(data)){
+  if(length(data) > 0){
     # first check whether dots were supplied as a list
     # prevents case where `brew(list(x = 1))` returns `list(list(x = 1))`
     if(length(data) == 1L && inherits(data[[1]], "list")){
       data <- data[[1]]
     }
-    # check whether all levels are named, and if not, abort
-    names_vec <- do.call(c, melt(data)[, -1])
-    if(any(is.na(names_vec))){
-      abort(c("Supplied lists contains entries with missing names",
-              i = "All entries to `brew()` must be named"))
-    }
     ## check for files, and if given, append
     if(!missing(file)){
       check_file(file)
       x <- read_config(file)
-      return(list_modify(data, x)) # note priority given to x
-    }else{
-      return(data)
+      data <- list_modify(data, x) # note priority given to x
     }
+    # check whether all levels are named, and if not, abort
+    check_missing_names(data)
+    return(data)
   }else{
-    abort("No data supplied to `brew()`")
+    return(NULL)
+    # abort("No data supplied to `brew()`")
+  }
+}
+
+#' code for checking for missing names
+#' @importFrom rlang abort
+#' @importFrom rrapply rrapply
+#' @keywords internal
+#' @noRd
+check_missing_names <- function(x){
+  names_df <- rrapply(x, how = "melt")
+  names_df <- names_df[, grepl("^L[[:digit:]]{1,2}$", colnames(names_df)), 
+                         drop = FALSE]
+  # in the above, internal missing names are always either "" or "1"
+  result <- apply(names_df, 1, function(a){
+    any(nchar(a) < 1 | grepl("^[[:digit:]]{1,}$", a), na.rm = TRUE)})
+  # error if required
+  if(any(result)){
+    abort(c("Supplied lists contains entries with missing names",
+            i = "All entries to `brew()` must be named"))
   }
 }

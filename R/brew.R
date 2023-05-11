@@ -11,6 +11,9 @@
 #' @param .pkg string: package name that `potions` is being used within. If 
 #' using `potions` within a package development process, set this argument 
 #' instead of `slot`.
+#' @param leaves logical: should matching be done on whole lists (TRUE, the
+#' default), or leaves only (aka terminal nodes, FALSE)? For non-nested lists
+#' these arguments are equivalent.
 #' @importFrom rlang abort
 #' @details 
 #' The default method is to use `brew` without setting either `.pkg` or `.slot`
@@ -50,7 +53,7 @@
 #' # optional clean-up
 #' drain()
 #' @export
-brew <- function(..., file, .slot, .pkg){
+brew <- function(..., file, .slot, .pkg, leaves = FALSE){
   
   # determine behavior based on supplied arguments
   has_slot <- !missing(.slot)
@@ -59,23 +62,34 @@ brew <- function(..., file, .slot, .pkg){
     if(has_pkg){
       abort("Both `.slot` and `.pkg` have been set; please choose one")
     }
-    brew_interactive(..., file = file, .slot = .slot)
+    brew_interactive(..., 
+                     file = file, 
+                     .slot = .slot, 
+                     leaves = leaves)
   }else{
     if(has_pkg){
-      brew_package(..., file = file, .pkg = .pkg)
+      brew_package(..., 
+                   file = file, 
+                   .pkg = .pkg,
+                   leaves = leaves)
     }else{ # if .slot and .pkg missing, choose based on call location
       package_check <- trace_back()$namespace |> 
         check_within_pkg()
       if(package_check$within){
-        brew_package(..., file = file, .pkg = package_check$pkg)
+        brew_package(..., 
+                     file = file, 
+                     .pkg = package_check$pkg, 
+                     leaves = leaves)
       }else{
         lookup <- check_existing_slots()
         switch(lookup$method,
                "all_empty" = {brew_interactive(..., 
-                                               file = file)}, # no data; .slot is random
+                                               file = file,
+                                               leaves = leaves)}, # no data; .slot is random
                ".slot" = {brew_interactive(..., 
                                            file = file, 
-                                           .slot = lookup$value)}) 
+                                           .slot = lookup$value,
+                                           leaves = leaves)}) 
       }
     }
   }
@@ -84,16 +98,17 @@ brew <- function(..., file, .slot, .pkg){
 #' @rdname brew
 #' @importFrom rlang enquos
 #' @export
-brew_package <- function(..., file, .pkg){
+brew_package <- function(..., file, .pkg, leaves = FALSE){
   # check supplied data
+  check_is_logical(leaves)
   data <- check_potions_data(list(...), file)
   # check package info
   check_is_character(.pkg)
   check_length_one(.pkg)
-  # create current_list
+  # update data
   current_list <- check_potions_storage() |>
     update_package_names(.pkg) |>
-    update_data(provided = data, .pkg = .pkg)
+    update_data(provided = data, .pkg = .pkg, leaves = leaves)
   # push to options
   options(list("potions-pkg" = current_list))
 }
@@ -101,12 +116,14 @@ brew_package <- function(..., file, .pkg){
 #' @rdname brew
 #' @importFrom rlang enquos
 #' @export
-brew_interactive <- function(..., file, .slot){
+brew_interactive <- function(..., file, .slot, leaves = FALSE){
   # check supplied data
+  check_is_logical(leaves)
   data <- check_potions_data(list(...), file) 
   .slot <- check_slot_name(.slot)
+  # update data
   current_list <- check_potions_storage() |> 
                   update_default_name(.slot = .slot) |>
-                  update_data(data, .slot = .slot)
+                  update_data(data, .slot = .slot, leaves = leaves)
   options(list("potions-pkg" = current_list))
 }
