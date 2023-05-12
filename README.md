@@ -39,7 +39,9 @@ To store data in `options()`, use `brew()`
 
 ``` r
 library(potions)
-brew(list(x = 1, y = list(a = 2, b = 4)))
+brew(list(x = 1, y = list(a = 2, b = 4))) # use a list
+
+brew(x = 1) # or as named arguments
 ```
 
 Then you can use `pour()` to get the information you need:
@@ -52,10 +54,10 @@ pour() |> str() # get all data
 #>   ..$ a: num 2
 #>   ..$ b: num 4
 
-pour(x) # get a subset of data
+pour("x") # get a subset of data
 #> [1] 1
 
-pour(y, a) # for nested data
+pour("y", "a") # for nested data
 #> [1] 2
 ```
 
