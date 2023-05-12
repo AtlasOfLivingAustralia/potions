@@ -140,8 +140,15 @@ test_that("`brew()` doesn't call names from the Global environment", {
   options(list("potions-pkg" = NULL))
 })
 
-test_that("`brew()` works when `leaves = TRUE`", {
+test_that("`brew()` works when `method = leaves`", {
   brew(list(data1 = list(x = 1, y = 2), 
             data2 = list(a = 5, b = 10)))
-  brew(x = 1, b = 2, leaves = TRUE)
+  brew(x = 20, b = 50, method = "leaves")
+  expect_equal(pour(), 
+               list(data1 = list(x = 20, y = 2), 
+                    data2 = list(a = 5, b = 50)))
+  options(list("potions-pkg" = NULL))
 })
+
+## NOTE:
+## methods "merge" and "overwrite" are not tested yet!

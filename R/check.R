@@ -20,16 +20,6 @@ check_is_character <- function(x){
   }
 }
 
-#' simple logical check for 'leaves' arg
-#' @importFrom rlang abort
-#' @keywords internal
-#' @noRd
-check_is_logical <- function(x){
-  if(!is.logical(x)){
-    abort("Argument `leaves` must be logical")
-  }
-}
-
 #' simple length check
 #' @importFrom rlang abort
 #' @keywords internal

@@ -22,6 +22,7 @@ update_default_name <- function(data, .slot){
 #' @importFrom rlang abort
 #' @importFrom purrr pluck
 #' @importFrom purrr pluck<-
+#' @importFrom purrr list_merge
 #' @importFrom purrr list_modify
 #' @noRd
 #' @keywords Internal
@@ -29,7 +30,7 @@ update_data <- function(data,
                         provided, 
                         .slot = NULL, 
                         .pkg = NULL, 
-                        leaves = FALSE){
+                        method){
   
   # set error catching behavior for each type
   # in practice this shouldn't be needed, as `update_data()` is only ever called internally
@@ -61,17 +62,48 @@ update_data <- function(data,
   current_list <- pluck(data, !!!index_vector)
   
   # update this data with user-supplied information
-  if(leaves){
-    browser()
-
-    update_leaves(data)
-  }else{
-    if(is.null(current_list)){
-      pluck(data, !!!index_vector) <- provided
-    }else{
-      pluck(data, !!!index_vector) <- list_modify(current_list, !!!provided)
-    }
+  if(is.null(current_list)){
+    method <- "overwrite"
   }
-  
+  final_list <- switch(method,
+    "modify" = list_modify(current_list, !!!provided),
+    "merge" = list_merge(current_list, !!!provided),
+    "leaves" = leaf_modify(current_list, provided),
+    "overwrite" = provided,
+    {abort("Argument to `method` not recognised")}
+  )
+  pluck(data, !!!index_vector) <- final_list
   return(data)
+}
+
+
+#' Modify only the leaves of a list 
+#' @importFrom rrapply rrapply
+#' @noRd
+#' @keywords Internal
+leaf_modify <- function(old, new){
+  names_df <- rrapply(old, how = "melt")
+  names_df <- names_df[, grepl("^L[[:digit:]]{1,2}$", colnames(names_df)), 
+                       drop = FALSE]
+  # get vector of leaf names
+  leaf_lookup <- data.frame(
+    index = apply(names_df, 1, function(a){max(which(!is.na(a)))}),
+    name = apply(names_df, 1, function(a){a[max(which(!is.na(a)))]}))
+  
+  for(i in seq_len(nrow(leaf_lookup))){
+    old <- leaf_overwrite(names_df[i, ], leaf_lookup[i, ], old, new)
+  }
+
+   return(old)
+}
+
+#' Modify only the leaves of a list 
+#' @noRd
+#' @keywords Internal
+leaf_overwrite <- function(df, lookup, old, new){
+  if(any(names(new) == lookup$name)){
+    address <- unlist(df[, seq_len(lookup$index)])
+    pluck(old, !!!address) <- new[[lookup$name]]
+  }
+  return(old)
 }
