@@ -19,6 +19,10 @@ test_that("`brew` fails when objects are passed that are not lists", {
   expect_error(brew(integer(1, 2, 3)))
 })
 
+test_that("brew errors when NSE is used", {
+  expect_error(brew(x == 1))
+  options(list("potions-pkg" = NULL))
+})
 test_that("`brew` fails when user passes `==` instead of `=`", {
   expect_error(brew(year == 10))
 })

@@ -18,7 +18,7 @@ those names to be quoted."><meta property="og:image" content="https://potions.al
     
     <a class="navbar-brand me-2" href="../index.html">potions</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,9 @@ those names to be quoted."><meta property="og:image" content="https://potions.al
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/quick-start-guide.html">Quick start guide</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -116,7 +119,7 @@ arguments.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># first import some data</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="brew.html">brew</a></span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">y</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="brew.html">brew</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># get all data</span></span></span>
 <span class="r-in"><span><span class="fu">pour</span><span class="op">(</span><span class="op">)</span></span></span>
@@ -133,11 +136,11 @@ arguments.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># get only data from slot x</span></span></span>
-<span class="r-in"><span><span class="fu">pour</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pour</span><span class="op">(</span><span class="st">"x"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># get nested data</span></span></span>
-<span class="r-in"><span><span class="fu">pour</span><span class="op">(</span><span class="va">y</span>, <span class="va">a</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pour</span><span class="op">(</span><span class="st">"y"</span>, <span class="st">"a"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># optional clean-up</span></span></span>

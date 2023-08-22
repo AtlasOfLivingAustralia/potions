@@ -28,16 +28,16 @@
 #' values matching those names.
 #' @examples 
 #' # first import some data
-#' brew(x == 1, y == list(a = 2, b = 3))
+#' brew(x = 1, y = list(a = 2, b = 3))
 #' 
 #' # get all data
 #' pour()
 #' 
 #' # get only data from slot x
-#' pour(x)
+#' pour("x")
 #' 
 #' # get nested data
-#' pour(y, a)
+#' pour("y", "a")
 #' 
 #' # optional clean-up
 #' drain()

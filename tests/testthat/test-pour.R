@@ -65,3 +65,9 @@ test_that("pour returns null with incorrect slot names", {
   rm(result)
   options(list("potions-pkg" = NULL))
 })
+
+test_that("pour errors when NSE is used", {
+  brew(x = 1)
+  expect_error(pour(x))
+  options(list("potions-pkg" = NULL))
+})
