@@ -1,10 +1,13 @@
 url: https://potions.ala.org.au
 template:
   bootstrap: 5
+  theme: breeze-light
   bslib:
+    heading_font: {google: "Lato"}
+    base_font: {google: "Roboto"}  
     code_font: {google: "Source Code Pro"}
     pkgdown-nav-height: 130px
   params:
-    bootswatch: lux
+    bootswatch: simplex
 development:
   mode: auto
