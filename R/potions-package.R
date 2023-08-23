@@ -17,7 +17,6 @@
 #' In combination, these features should make it easy for users and developers 
 #' to manage options using `potions`.
 #' @name potions
-#' @docType package
 #' @section Functions:
 #' \itemize{
 #'    \item{[brew()]: store data in `options()`}
@@ -25,4 +24,4 @@
 #'    \item{[drain()]: remove data stored using [brew()]}
 #'  }
 #' @keywords internal
-NULL
+"_PACKAGE"

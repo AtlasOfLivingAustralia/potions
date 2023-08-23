@@ -1,4 +1,4 @@
-#' Get configuration data from a file
+#' Handle configuration data from a file
 #' 
 #' This is primarily an internal function for importing configuration 
 #' information from a file. It is called by `brew()`, and detects `.yml` or 

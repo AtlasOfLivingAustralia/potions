@@ -164,6 +164,7 @@ check_pour_package <- function(.pkg){
 #' means that .slot is not always required
 #' @importFrom rlang abort
 #' @importFrom rlang inform
+#' @importFrom purrr pluck
 #' @keywords internal
 #' @noRd
 check_pour_interactive <- function(.slot){
@@ -178,7 +179,8 @@ check_pour_interactive <- function(.slot){
     if(missing(.slot)){
       if(length(all_data$slots) > 1){
         if(any(names(all_data$slots) == all_data$mapping$current_slot)){
-          return(all_data$slots[[all_data$mapping$current_slot]])
+          slot_name <- pluck(all_data, !!!list("mapping", "current_slot"))
+          pluck(all_data, !!!c("slots", slot_name))
         }else{
           bullets <- c("Multiple slots available, but `current_slot` is not named",
                        i = "please specify `.slot` to continue")
@@ -209,18 +211,47 @@ check_pour_interactive <- function(.slot){
 #' This function takes supplied `data` (typically a `list`) and `file` (a file 
 #' path, given as a string), and integrates them into a single `list`. It is 
 #' called by both `brew_package` and `brew_interactive`.
+#' @importFrom purrr list_modify
+#' @importFrom rlang abort
 #' @keywords internal
 #' @noRd
 check_potions_data <- function(data, file){
-  if(!missing(data)){
+  if(length(data) > 0){
+    # first check whether dots were supplied as a list
+    # prevents case where `brew(list(x = 1))` returns `list(list(x = 1))`
+    if(length(data) == 1L && inherits(data[[1]], "list")){
+      data <- data[[1]]
+    }
+    ## check for files, and if given, append
     if(!missing(file)){
       check_file(file)
       x <- read_config(file)
-      return(update_list(x, data))
-    }else{
-      return(data)
+      data <- list_modify(data, x) # note priority given to x
     }
+    # check whether all levels are named, and if not, abort
+    check_missing_names(data)
+    return(data)
   }else{
     return(NULL)
+    # abort("No data supplied to `brew()`")
+  }
+}
+
+#' code for checking for missing names
+#' @importFrom rlang abort
+#' @importFrom rrapply rrapply
+#' @keywords internal
+#' @noRd
+check_missing_names <- function(x){
+  names_df <- rrapply(x, how = "melt")
+  names_df <- names_df[, grepl("^L[[:digit:]]{1,2}$", colnames(names_df)), 
+                         drop = FALSE]
+  # in the above, internal missing names are always either "" or "1"
+  result <- apply(names_df, 1, function(a){
+    any(nchar(a) < 1 | grepl("^[[:digit:]]{1,}$", a), na.rm = TRUE)})
+  # error if required
+  if(any(result)){
+    abort(c("Supplied lists contains entries with missing names",
+            i = "All entries to `brew()` must be named"))
   }
 }

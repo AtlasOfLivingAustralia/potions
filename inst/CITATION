@@ -1,0 +1,11 @@
+year <- format(Sys.Date(), "%Y")
+note <- sprintf("R package version %s", meta$Version)
+
+citHeader("To cite potions in publications use:")
+
+bibentry(bibtype = "Manual",
+    "title" = "potions: simple options management",
+    author = c(person("Martin", "Westgate")),
+     year = year,
+     note = note,
+     url = "https://CRAN.R-project.org/package=potions")

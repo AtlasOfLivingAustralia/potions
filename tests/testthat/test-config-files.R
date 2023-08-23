@@ -10,6 +10,7 @@ test_that("read_config_file works for yml", {
   # clean up
   unlink("config.yml")
   rm(x, config_list)
+  options(list("potions-pkg" = NULL))
 })
 
 test_that("read_config_file works for json", {
@@ -22,4 +23,5 @@ test_that("read_config_file works for json", {
   expect_equal(x, config_list)
   unlink("config.json")
   rm(x, config_list)
+  options(list("potions-pkg" = NULL))
 })

@@ -5,3 +5,4 @@
 ^Meta$
 ^pkgdown$
 README.Rmd
+_pkgdown.yml

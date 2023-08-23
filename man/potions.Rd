@@ -3,6 +3,7 @@
 \docType{package}
 \name{potions}
 \alias{potions}
+\alias{potions-package}
 \title{potions: simple options management}
 \description{
 Often it is useful to set bespoke options for a single workflow, or within
@@ -30,4 +31,16 @@ to manage options using \code{potions}.
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://potions.ala.org.au}
+  \item Report bugs at \url{https://github.com/AtlasOfLivingAustralia/potions/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Martin Westgate \email{martin.westgate@csiro.au}
+
+}
 \keyword{internal}
